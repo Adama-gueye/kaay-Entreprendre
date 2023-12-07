@@ -29,14 +29,12 @@ class LivrableController extends Controller
     public function rules()
     {
         return [
-            'titre' => 'required',
             'contenu' => 'required',
         ];
     }
     public function messages()
     {
         return [
-            'titre.required' => 'Desolé! le champ libelle est Obligatoire',
             'contenu.required' => 'Desolé! le champ contenu est Obligatoire',
             ];
     }
@@ -56,10 +54,9 @@ class LivrableController extends Controller
 
         $livrable = new Livrable();
         $livrable->contenu = $request->contenu;
+        $livrable->ressource_id = $request->ressource_id;
         $livrable->user_id = $user->id;
-        $livrable->ressource_id = $request->ressource;
         $livrable->save();
-
         return response()->json(['message' => 'Livrable créé avec succès'], 201);
     }
 
