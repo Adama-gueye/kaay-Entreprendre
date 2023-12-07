@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class DemandeAccompagnementController extends Controller
 {
+    use ReturnJsonResponseTrait;
     /**
      * Display a listing of the resource.
      */
@@ -52,7 +53,7 @@ class DemandeAccompagnementController extends Controller
      */
     public function update(Request $request, DemandeAccompagnement $demandeAccompagnement)
     {
-        //
+        RE
     }
 
     /**
