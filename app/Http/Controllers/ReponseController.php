@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Reponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReponseController extends Controller
 {
@@ -18,14 +19,33 @@ class ReponseController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request ,$id)
     {
-        //
+        $request->validate([
+            "reponse"=> "required",
+            
+           ]);
+           
+             $user=Auth::user();
+            $pe=new Reponse ();
+             $pe->commentaire=$request->commentaire;
+            $pe->user_id=$user->id;
+           $pe->commentaire_id=$user->id;
+           $pe->save()  ;
+           
+        return response()->json(['message' => 'reponse  ajouter avec succès'], 201);
     }
 
     /**
      * Store a newly created resource in storage.
      */
+    public function destroy(Request $request,$id)
+    {
+        $pe=Reponse::find($id);
+        $pe->repose =$request->contenue;
+        $pe->delete($id);
+        return response()->json(['message' => 'reponse suprimer avec succès'], 201);
+    }
     public function store(Request $request)
     {
         //
@@ -58,8 +78,5 @@ class ReponseController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Reponse $reponse)
-    {
-        //
-    }
+   
 }
