@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CommentaireController;
 use App\Http\Controllers\GuideController;
+use App\Http\Controllers\LivrableController;
 use App\Http\Controllers\RessourceController;
 use App\Http\Controllers\UserController;
 use Egulias\EmailValidator\Parser\Comment;
@@ -42,5 +43,9 @@ Route::group(['middleware' => 'auth:sanctum'],function(){
     Route::delete('/ressourceDelete{id}',[RessourceController::class,'destroy']);
     Route::patch('/ressourceUpdate{id}',[RessourceController::class,'update']);
     Route::get('/ressourceShow{id}',[RessourceController::class,'show']);
+
+//livrable
+    Route::get('/ressourceIndex',[LivrableController::class,'index']);
+    Route::post('/ressourceStore',[LivrableController::class,'store']);
 
 });

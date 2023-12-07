@@ -82,6 +82,17 @@ class UserController extends Controller
 
                 
             ]);
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|email',
+                'password' => 'required',
+                'nom' => 'required',
+                'prenom' => 'required',
+            ]);
+       
+            if($validator->fails()){
+    
+                return Response(['message' => $validator->errors()],401);
+            }
         $user = new User();
         
         $user->nom = $request->nom;

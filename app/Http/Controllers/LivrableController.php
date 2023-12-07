@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Livrable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class LivrableController extends Controller
 {
@@ -12,7 +14,8 @@ class LivrableController extends Controller
      */
     public function index()
     {
-        //
+        $livrable = Livrable::all();
+        return response()->json(compact('livrable'),200);
     }
 
     /**
@@ -23,12 +26,41 @@ class LivrableController extends Controller
         //
     }
 
+    public function rules()
+    {
+        return [
+            'titre' => 'required',
+            'contenu' => 'required',
+        ];
+    }
+    public function messages()
+    {
+        return [
+            'titre.required' => 'Desolé! le champ libelle est Obligatoire',
+            'contenu.required' => 'Desolé! le champ contenu est Obligatoire',
+            ];
+    }
+
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
+        $user = Auth::user();
+        $validator = Validator::make($request->all(), $this->rules());
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $livrable = new Livrable();
+        $livrable->contenu = $request->contenu;
+        $livrable->user_id = $user->id;
+        $livrable->ressource_id = $request->ressource;
+        $livrable->save();
+
+        return response()->json(['message' => 'Livrable créé avec succès'], 201);
     }
 
     /**
