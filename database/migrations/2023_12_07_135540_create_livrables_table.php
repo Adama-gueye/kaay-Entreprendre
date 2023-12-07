@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('commentaires', function (Blueprint $table) {
+        Schema::create('livrables', function (Blueprint $table) {
             $table->id();
-            $table->text('commentaire');
+            $table->string('contenu');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->unsignedBigInteger('partage_experience_id');
-            $table->foreign('partage_experience_id')->references('id')->on('partage_experiences')->onDelete('cascade')->onUpdate('cascade');
+            $table->unsignedBigInteger('ressource_id');
+            $table->foreign('ressource_id')->references('id')->on('ressources')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('commentaires');
+        Schema::dropIfExists('livrables');
     }
 };

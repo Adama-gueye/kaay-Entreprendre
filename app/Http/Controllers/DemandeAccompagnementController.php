@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Commentaire;
-use App\Models\User;
+use App\Models\DemandeAccompagnement;
 use Illuminate\Http\Request;
 
-class CommentaireController extends Controller
+class DemandeAccompagnementController extends Controller
 {
+   // use ReturnJsonResponseTrait;
     /**
      * Display a listing of the resource.
      */
-    public function index() {
-    
+    public function index()
+    {
+        //
     }
-    
 
     /**
      * Show the form for creating a new resource.
@@ -35,7 +35,7 @@ class CommentaireController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Commentaire $commentaire)
+    public function show(DemandeAccompagnement $demandeAccompagnement)
     {
         //
     }
@@ -43,7 +43,7 @@ class CommentaireController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Commentaire $commentaire)
+    public function edit(DemandeAccompagnement $demandeAccompagnement)
     {
         //
     }
@@ -51,15 +51,15 @@ class CommentaireController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Commentaire $commentaire)
+    public function update(Request $request, DemandeAccompagnement $demandeAccompagnement)
     {
-        //
+        
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Commentaire $commentaire)
+    public function destroy(DemandeAccompagnement $demandeAccompagnement)
     {
         //
     }
