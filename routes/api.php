@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CommentaireController;
 use App\Http\Controllers\GuideController;
+use App\Http\Controllers\RessourceController;
 use App\Http\Controllers\UserController;
 use Egulias\EmailValidator\Parser\Comment;
 use Illuminate\Http\Request;
@@ -34,5 +35,12 @@ Route::group(['middleware' => 'auth:sanctum'],function(){
     Route::get('/guideShow{id}',[GuideController::class,'show']);
     Route::get('/guideIndex',[GuideController::class,'index']);
     Route::delete('/guideDelete{id}',[GuideController::class,'destroy']);
+
+//ressource
+    Route::get('/ressourceIndex',[RessourceController::class,'index']);
+    Route::post('/ressourceStore',[RessourceController::class,'store']);
+    Route::delete('/ressourceDelete{id}',[RessourceController::class,'destroy']);
+    Route::patch('/ressourceUpdate{id}',[RessourceController::class,'update']);
+    Route::get('/ressourceShow{id}',[RessourceController::class,'show']);
 
 });

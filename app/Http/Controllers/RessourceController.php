@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Guide;
 use App\Models\Ressource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +15,8 @@ class RessourceController extends Controller
      */
     public function index()
     {
-        //
+        $ressources = Ressource::all();
+        return response()->json(compact('ressources'), 200);
     }
 
     /**
@@ -25,14 +27,18 @@ class RessourceController extends Controller
     {
         return [
             'titre' => 'required',
-            'description' => 'required',
+            'consigne' => 'required',
+            'objectif' => 'required',
+            'etat' => 'required',
         ];
     }
     public function messages()
     {
         return [
             'titre.required' => 'Desolé! le champ libelle est Obligatoire',
-            'description.required' => 'Desolé! veuillez choisir une description svp',
+            'consigne.required' => 'Desolé! le champ consigne est Obligatoire',
+            'objectif.required' => 'Desolé! le champ objectif est Obligatoire',
+            'etat.required' => 'Desolé! le champ etat est Obligatoire',
         ];
     }
 
@@ -58,8 +64,10 @@ class RessourceController extends Controller
 
         $ressource = new Ressource();
         $ressource->titre = $request->titre;
-        $ressource->description = $request->description;
-        $ressource->user_id = $user->id;
+        $ressource->objectif = $request->objectif;
+        $ressource->consigne = $request->consigne;
+        $ressource->etat = $request->etat;
+        $ressource->guide_id = 1;
         $ressource->save();
 
         return response()->json(['message' => 'Ressource créé avec succès'], 201);
@@ -68,9 +76,10 @@ class RessourceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Ressource $ressource)
+    public function show($id)
     {
-        //
+        $ressource = Ressource::find($id);
+        return response()->json(compact('ressource'),200);
     }
 
     /**
@@ -84,16 +93,32 @@ class RessourceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Ressource $ressource)
+    public function update(Request $request, $id)
     {
-        //
+        $user = Auth::user();
+       $validator = Validator::make($request->all(), $this->rules());
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $ressource = Ressource::find($id);
+        $ressource->titre = $request->titre;
+        $ressource->objectif = $request->objectif;
+        $ressource->consigne = $request->consigne;
+        $ressource->etat = $request->etat;
+        $ressource->guide_id = 1;
+        $ressource->save();
+
+        return response()->json(['message' => 'Ressource modifié avec succès'], 201);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Ressource $ressource)
+    public function destroy($id)
     {
-        //
+        Ressource::find($id)->delete();
+        return response()->json(['message' => 'Ressource supprimé avec succès'], 200);
     }
 }
