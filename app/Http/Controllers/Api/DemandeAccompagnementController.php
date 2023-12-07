@@ -16,9 +16,30 @@ class DemandeAccompagnementController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        try {
+
+            $query = DemandeAccompagnement::query();
+            $perPage = 1;
+            $page = $request->input('page', 1);
+            $search = $request->input('search');
+            if ($search) {
+                $query->whereRaw("title LIKE '%" . $search . "%'");
+            }
+            $total = $query->count();
+            $result = $query->offset(($page - 1) * $perPage)->limit($perPage)->get();
+
+            return response()->json([
+                'status_code' => 'status_code',
+                'status_message' => 'status_message',
+                'current_page' => $page,
+                'last_page' => ceil($total / $perPage),
+                'items' => $result,
+            ]);
+        } catch (Exception $e) {
+            return response()->json($e);
+        }
     }
 
     /**
@@ -47,23 +68,12 @@ class DemandeAccompagnementController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(DemandeAccompagnement $demandeAccompagnement)
-    {
-        return 'Le formulaire dédition';
-        
-    }
-
- 
-
-    /**
      * Remove the specified resource from storage.
      */
     public function destroy(Request $request)
     {
         $demandeAccompagnement = DemandeAccompagnement::find($request->demandeAccompagnement);    
-        if ($demandeAccompagnement->user_id !== $demandeAccompagnement->id) {
+        if ($demandeAccompagnement->user_id !== $demandeAccompagnement->id && $demandeAccompagnement->user->role == 'admin' ) {
             return $this->returnJsonResponse(422, 'Vous nest pas lauteur de ce demandeAccompagnement', $demandeAccompagnement, NULL);
         } else {
             if ($demandeAccompagnement !== null) {
