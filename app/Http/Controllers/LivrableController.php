@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DemandeAccompagnement;
+use App\Models\Livrable;
 use Illuminate\Http\Request;
 
-class DemandeAccompagnementController extends Controller
+class LivrableController extends Controller
 {
-   // use ReturnJsonResponseTrait;
     /**
      * Display a listing of the resource.
      */
@@ -35,7 +34,7 @@ class DemandeAccompagnementController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(DemandeAccompagnement $demandeAccompagnement)
+    public function show(Livrable $livrable)
     {
         //
     }
@@ -43,7 +42,7 @@ class DemandeAccompagnementController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(DemandeAccompagnement $demandeAccompagnement)
+    public function edit(Livrable $livrable)
     {
         //
     }
@@ -51,15 +50,15 @@ class DemandeAccompagnementController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, DemandeAccompagnement $demandeAccompagnement)
+    public function update(Request $request, Livrable $livrable)
     {
-        
+        //
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(DemandeAccompagnement $demandeAccompagnement)
+    public function destroy(Livrable $livrable)
     {
         //
     }
