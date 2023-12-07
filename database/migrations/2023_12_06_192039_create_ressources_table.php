@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('ressources', function (Blueprint $table) {
             $table->id();
+            $table->string('nom');
+            $table->string('etat');
+            $table->unsignedBigInteger('guide_id');
+            $table->foreign('guide_id')->references('id')->on('guides')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }
