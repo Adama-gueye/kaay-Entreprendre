@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Ressource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class RessourceController extends Controller
 {
@@ -13,6 +15,25 @@ class RessourceController extends Controller
     public function index()
     {
         //
+    }
+
+    /**
+     * 
+     */
+
+    public function rules()
+    {
+        return [
+            'titre' => 'required',
+            'description' => 'required',
+        ];
+    }
+    public function messages()
+    {
+        return [
+            'titre.required' => 'Desolé! le champ libelle est Obligatoire',
+            'description.required' => 'Desolé! veuillez choisir une description svp',
+        ];
     }
 
     /**
@@ -28,7 +49,20 @@ class RessourceController extends Controller
      */
     public function store(Request $request)
     {
-        //
+       $user = Auth::user();
+       $validator = Validator::make($request->all(), $this->rules());
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $ressource = new Ressource();
+        $ressource->titre = $request->titre;
+        $ressource->description = $request->description;
+        $ressource->user_id = $user->id;
+        $ressource->save();
+
+        return response()->json(['message' => 'Ressource créé avec succès'], 201);
     }
 
     /**
