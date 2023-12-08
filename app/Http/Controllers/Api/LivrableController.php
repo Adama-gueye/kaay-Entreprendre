@@ -83,7 +83,7 @@ class LivrableController extends Controller
      */
     public function edit(Livrable $livrable)
     {
-      
+      return 'le formulaire pour editer le livrable';
     }
 
     /**
