@@ -52,8 +52,10 @@ Route::group(['middleware' => 'auth:sanctum'],function(){
 //partege Expérience
     Route::put('/experience/update{id}',[PartageExperienceController::class,'update']);
     Route::delete('/experience/suprimmer{id}',[PartageExperienceController::class,'destroy']);
+    // commentaire
     Route::post('/commentaire',[CommentaireController::class,'create']);
     Route::delete('/commentaire/sup{id}',[CommentaireController::class,'destroy']);
+    Route::get('/commentaire/show',[CommentaireController::class,'show']);
     Route::post('/reponse',[ReponseController::class,'create']);
     Route::delete('/reponse/sup{id}',[ReponseController::class,'destroy']);
 //ressource

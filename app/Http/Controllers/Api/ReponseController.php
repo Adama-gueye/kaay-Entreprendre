@@ -1,12 +1,20 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-namespace App\Http\Controllers;
+use App\Http\Controllers\Controller;
 
 use App\Models\Reponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use OpenApi\Annotations as OA;
+/**
+ * @OA\Info(
+ *     description="Endpoind commentaire",
+ *     version="1.0.0",
+ *     title="Swagger Petstore"
+ * )
+ * 
+ */
 class ReponseController extends Controller
 {
     /**
@@ -17,8 +25,17 @@ class ReponseController extends Controller
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
+    
+
+   
+
+  /**
+     * @OA\Post(
+     *     path="/api/user",
+     *     summary="Retourne cree une reponse",
+     *     @OA\Response(response="201", description="Successful operation")
+     *    
+     * )
      */
     public function create(Request $request ,$id)
     {
@@ -39,6 +56,15 @@ class ReponseController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     * 
+     */
+    /**
+     * @OA\delete(
+     *     path="/api/user",
+     *     summary="Retourne suprimer une reponse",
+     *     @OA\Response(response="201", description="Successful operation")
+     *    
+     * )
      */
     public function destroy(Request $request,$id)
     {
@@ -53,11 +79,18 @@ class ReponseController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * @OA\Get(
+     *     path="/api/user",
+     *     summary="Retourne la liste des reponse",
+     *     @OA\Response(response="200", description="Successful operation")
+     *    
+     * )
      */
-    public function show(Reponse $reponse)
+    public function show()
     {
-        //
+        
+        $reponse = Reponse::all();
+        return response()->json(compact('reponse'),200);
     }
 
     /**
