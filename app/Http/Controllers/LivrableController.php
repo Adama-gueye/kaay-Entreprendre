@@ -58,8 +58,11 @@ class LivrableController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Livrable $livrable)
+    public function destroy(Request $request,$id )
     {
-        //
+        $pe=Livrable::find($id);
+        $pe->contenu =$request->contenue;
+        $pe->delete($id);
+        return response()->json(['message' => ' Livrable suprimer avec succès'], 201); 
     }
 }
