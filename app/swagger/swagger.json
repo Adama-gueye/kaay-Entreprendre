@@ -1,0 +1,57 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Swagger Petstore",
+        "description": "API kaay entreprendre",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/user": {
+            "get": {
+                "summary": "Retourne liste des utilisateurs",
+                "operationId": "84cf93ca432487b050e247d4a8421fd7",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "summary": "Connexion entre l'utilisateur",
+                "operationId": "e50d4253c7a9cef3ce2fc45ee80172aa",
+                "responses": {
+                    "201": {
+                        "description": "connexion succes"
+                    },
+                    "401": {
+                        "description": "Identifiant incorect"
+                    }
+                }
+            }
+        },
+        "/api/register": {
+            "post": {
+                "summary": "Création compte d'un utilisareur",
+                "operationId": "b16a8a188af6c3ccbc5d29e20c02f961",
+                "responses": {
+                    "201": {
+                        "description": "compte creer succes"
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "get": {
+                "summary": "Déconnexion utilisareur",
+                "operationId": "8992dd4fbd21ecd6bd79f84228dc98cf",
+                "responses": {
+                    "200": {
+                        "description": "succes"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -10,6 +10,14 @@ class DemandeAccompagnement extends Model
 {
     use HasFactory;
 
+    protected $fillable =  [
+        'titre',
+        'description',
+        'objectif',
+        'etat',
+        'user_id',
+    ];
+
     public function users() : BelongsToMany
     {
         return $this -> belongsToMany(User::class);

@@ -1,13 +1,14 @@
 <?php
 
-use App\Http\Controllers\CommentaireController;
-use App\Http\Controllers\GuideController;
-use App\Http\Controllers\LivrableController;
-use App\Http\Controllers\RessourceController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\Api\CommentaireController;
+use App\Http\Controllers\Api\GuideController;
+use App\Http\Controllers\Api\LivrableController;
+use App\Http\Controllers\Api\RessourceController;
+use App\Http\Controllers\Api\UserController;
 use Egulias\EmailValidator\Parser\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\DemandeAccompagnementController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +21,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
+
+
+// Route::get('/posts', [PostController::class, 'index']);
+//     Route::post('/post/create', [PostController::class, 'store']);
+//     Route::put('/post/edit/{post}', [PostController::class, 'update']);
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
@@ -28,6 +36,7 @@ Route::post('login',[UserController::class,'loginUser']);
 Route::post('/register',[UserController::class,'createCompte'])->name('create');
 
 Route::group(['middleware' => 'auth:sanctum'],function(){
+    Route::post('logout',[UserController::class,'logout']);
     Route::get('user',[UserController::class,'userDetails']);
     Route::get('logout',[UserController::class,'logout']);
     Route::get('/users',[UserController::class,'listeUtilisteurs']);
@@ -47,5 +56,9 @@ Route::group(['middleware' => 'auth:sanctum'],function(){
 //livrable
     Route::get('/ressourceIndex',[LivrableController::class,'index']);
     Route::post('/ressourceStore',[LivrableController::class,'store']);
+    
+//acommpagnement
+    Route::post('/accompany/create', [DemandeAccompagnementController::class, 'store']);
+    Route::delete('/post/{demandeAccompagnement}', [DemandeAccompagnementController::class, 'destroy']);
 
 });

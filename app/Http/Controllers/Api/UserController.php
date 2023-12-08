@@ -10,12 +10,28 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules;
+use OpenApi\Annotations as OA;
 
 
+/**
+ * @OA\Info(
+ *     description="API kaay entreprendre",
+ *     version="1.0.0",
+ *     title="Swagger Petstore"
+ * )
+ * 
+ */
 class UserController extends Controller
 {
     
 
+    /**
+     * @OA\Get(
+     *     path="/api/user",
+     *     summary="Retourne liste des utilisateurs",
+     *     @OA\Response(response="200", description="Successful operation")
+     * )
+     */
     public function listeUtilisteurs() {
         $user = Auth::user();
         if($user->role_id == 1){
@@ -29,6 +45,15 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * 
+     * @OA\Post(
+     *     path="/api/login",
+     *     summary="Connexion entre l'utilisateur",
+     *     @OA\Response(response="201", description="connexion succes"),
+     *     @OA\Response(response="401", description="Identifiant incorect")
+     * )
+     */
      public function loginUser(Request $request): Response
     {
         $validator = Validator::make($request->all(), [
@@ -72,6 +97,14 @@ class UserController extends Controller
      * create compte utilisateur
      */
 
+     /**
+     * 
+     * @OA\Post(
+     *     path="/api/register",
+     *     summary="Création compte d'un utilisareur",
+     *     @OA\Response(response="201", description="compte creer succes"),
+     * )
+     */
      public function createCompte(Request $request)
     {
             $request->validate([
@@ -79,6 +112,7 @@ class UserController extends Controller
                 'prenom' => ['required', 'string', 'max:50'],
                 'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
                 'password' => ['required', 'string', 'max:50'],
+                'image' => ['required', 'string', 'max:255'],
 
                 
             ]);
@@ -87,6 +121,7 @@ class UserController extends Controller
                 'password' => 'required',
                 'nom' => 'required',
                 'prenom' => 'required',
+                'image' => 'required'
             ]);
        
             if($validator->fails()){
@@ -94,7 +129,12 @@ class UserController extends Controller
                 return Response(['message' => $validator->errors()],401);
             }
         $user = new User();
-        
+        if($request->file('image')){
+            $file= $request->file('image');
+            $filename= date('YmdHi').$file->getClientOriginalName();
+            $file-> move(public_path('public/images'), $filename);
+            $bien['image']= $filename;
+        }
         $user->nom = $request->nom;
         $user->prenom = $request->prenom;
         $user->email = $request->email;
@@ -107,6 +147,15 @@ class UserController extends Controller
 
     /**
      * Display the specified resource.
+     */
+
+    /**
+     * 
+     * @OA\Get(
+     *     path="/api/logout",
+     *     summary="Déconnexion utilisareur",
+     *     @OA\Response(response="200", description="succes"),
+     * )
      */
     public function logout(): Response
     {
