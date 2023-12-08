@@ -1,21 +1,46 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use Exception;
 use App\Models\Livrable;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Controller;
+use App\Traits\ReturnJsonResponseTrait;
+use App\Http\Requests\LivrableFormRequest;
+use App\Models\Ressource;
 
 class LivrableController extends Controller
 {
+    use ReturnJsonResponseTrait;
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $livrable = Livrable::all();
-        return response()->json(compact('livrable'),200);
+       
+
+        try {
+            $query = Livrable::query();
+            $perPage = 1;
+            $page = $request->input('page', 1);
+            $search = $request->input('search');
+            if ($search) {
+                $query->whereRaw("title LIKE '%" . $search . "%'");
+            }
+            $total = $query->count();
+            $result = $query->offset(($page - 1) * $perPage)->limit($perPage)->get();
+
+            return response()->json([
+                'status_code' => 'status_code',
+                'status_message' => 'status_message',
+                'current_page' => $page,
+                'last_page' => ceil($total / $perPage),
+                'items' => $result,
+            ]);
+        } catch (Exception $e) {
+            return response()->json($e);
+        }
     }
 
     /**
@@ -23,49 +48,34 @@ class LivrableController extends Controller
      */
     public function create()
     {
-        //
+        return 'Ajouter la route vers le laffichage du formulaire ajout';
     }
-
-    public function rules()
-    {
-        return [
-            'contenu' => 'required',
-        ];
-    }
-    public function messages()
-    {
-        return [
-            'contenu.required' => 'Desolé! le champ contenu est Obligatoire',
-            ];
-    }
-
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(LivrableFormRequest $request)
     {
-        $user = Auth::user();
-        $validator = Validator::make($request->all(), $this->rules());
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+       
+        $existsResource = Ressource::find($request->validated('ressource_id'));
+        if($existsResource === null )
+        {
+            return $this->returnJsonResponse(422, 'La ressource de ce livrable est introuvable', $request->validated() );
         }
-
-        $livrable = new Livrable();
-        $livrable->contenu = $request->contenu;
-        $livrable->ressource_id = $request->ressource_id;
-        $livrable->user_id = $user->id;
-        $livrable->save();
-        return response()->json(['message' => 'Livrable créé avec succès'], 201);
+        return $this->returnJsonResponse(200, 'Livrable ajouté avec succes', $request->validated(), Livrable::create($request->all()));
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Livrable $livrable)
+    public function show(Request $request)
     {
-        //
+        $livrable = Livrable::find( $request->id);
+        if($livrable != null){
+            return $this->returnJsonResponse(200, 'Le livrable sélectionné est : ', $livrable);
+        } else {
+            return $this->returnJsonResponse(400, 'Le livrable sélectionné introuvable : ', $livrable);       
+        }
     }
 
     /**
@@ -73,22 +83,45 @@ class LivrableController extends Controller
      */
     public function edit(Livrable $livrable)
     {
-        //
+      return 'le formulaire pour editer le livrable';
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Livrable $livrable)
+    public function update(LivrableFormRequest $request)
     {
-        //
+    
+            $livrable = Livrable::find($request->id);
+
+            if (! $livrable-> exists) {
+                return $this->returnJsonResponse(422, 'Enregistrement introuvable ', $livrable);
+            }
+            if ($livrable->user_id !== $livrable->id && $livrable->user->role == 'admin') {
+                return $this->returnJsonResponse(422, 'Vous nest pas lauteur de ce livrable', $livrable, NULL);
+            } else if ($livrable->exists) {
+                return $this->returnJsonResponse(200, 'Le livrable à été mis à jour ', $livrable, $livrable->updated($request -> validated()));
+            }
+       
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Livrable $livrable)
+    public function destroy(Request $request)
     {
-        //
+        try {
+            $livrable = Livrable::find($request->id);
+            if ($livrable == null) {
+                return $this->returnJsonResponse(422, 'Enregistrement introuvable ', $livrable);
+            }
+            if ($livrable->user_id !== $livrable->id && $livrable->user->role == 'admin') {
+                return $this->returnJsonResponse(422, 'Vous nest pas lauteur de ce livrable', $livrable, NULL);
+            } else if ($livrable !== null) {
+                return $this->returnJsonResponse(200, 'Le livrable à été bien supprimé ', $livrable, $livrable->delete());
+            }
+        } catch (Exception $e) {
+            return $this->returnJsonResponse(422, 'Enregistrement introuvable ', $e);
+        }
     }
 }

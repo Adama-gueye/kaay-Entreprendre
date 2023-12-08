@@ -26,10 +26,6 @@ use App\Http\Controllers\APi\ReponseController;
 
 
 
-// Route::get('/posts', [PostController::class, 'index']);
-//     Route::post('/post/create', [PostController::class, 'store']);
-//     Route::put('/post/edit/{post}', [PostController::class, 'update']);
-
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
@@ -74,5 +70,15 @@ Route::group(['middleware' => 'auth:sanctum'],function(){
 //acommpagnement
     Route::post('/accompany/create', [DemandeAccompagnementController::class, 'store']);
     Route::delete('/post/{demandeAccompagnement}', [DemandeAccompagnementController::class, 'destroy']);
+    Route::post('/accompany/create', [DemandeAccompagnementController::class, 'store']);
+    Route::delete('/accompany/{id}', [DemandeAccompagnementController::class, 'destroy']);
+    Route::get('/accompany', [DemandeAccompagnementController::class, 'index']);
+    
+    Route::get('/livrable', [LivrableController::class, 'index']);
+    Route::get('/livrable/{id}', [LivrableController::class, 'show']);
+    Route::post('/livrable/create', [LivrableController::class, 'store']);
+    Route::patch('/livrable/{id}', [LivrableController::class, 'update']);
+    Route::delete('/livrable/{id}', [LivrableController::class, 'destroy']);
+
 
 });
