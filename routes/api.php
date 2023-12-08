@@ -6,9 +6,11 @@ use App\Http\Controllers\Api\LivrableController;
 use App\Http\Controllers\Api\RessourceController;
 use App\Http\Controllers\Api\UserController;
 use Egulias\EmailValidator\Parser\Comment;
+use App\Http\Controllers\Api\DemandeAccompagnementController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\DemandeAccompagnementController;
+use App\Http\Controllers\APi\PartageExperienceController;
+use App\Http\Controllers\APi\ReponseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +36,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('login',[UserController::class,'loginUser']);
 Route::post('/register',[UserController::class,'createCompte'])->name('create');
+//partage d'experiance
+
+
+
 
 Route::group(['middleware' => 'auth:sanctum'],function(){
     Route::post('logout',[UserController::class,'logout']);
@@ -45,7 +51,15 @@ Route::group(['middleware' => 'auth:sanctum'],function(){
     Route::get('/guideShow{id}',[GuideController::class,'show']);
     Route::get('/guideIndex',[GuideController::class,'index']);
     Route::delete('/guideDelete{id}',[GuideController::class,'destroy']);
+    Route::post('/experience',[PartageExperienceController::class,'create']);
 
+//partege Expérience
+    Route::put('/experience/update{id}',[PartageExperienceController::class,'update']);
+    Route::delete('/experience/suprimmer{id}',[PartageExperienceController::class,'destroy']);
+    Route::post('/commentaire',[CommentaireController::class,'create']);
+    Route::delete('/commentaire/sup{id}',[CommentaireController::class,'destroy']);
+    Route::post('/reponse',[ReponseController::class,'create']);
+    Route::delete('/reponse/sup{id}',[ReponseController::class,'destroy']);
 //ressource
     Route::get('/ressourceIndex',[RessourceController::class,'index']);
     Route::post('/ressourceStore',[RessourceController::class,'store']);

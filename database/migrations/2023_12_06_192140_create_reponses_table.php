@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('reponses', function (Blueprint $table) {
             $table->id();
             $table->string('reponse');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('commentaires')->onDelete('cascade')->onUpdate('cascade');
             $table->unsignedBigInteger('commentaire_id');
             $table->foreign('commentaire_id')->references('id')->on('commentaires')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
