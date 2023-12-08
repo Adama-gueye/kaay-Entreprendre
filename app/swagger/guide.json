@@ -1,0 +1,71 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Swagger Petstore",
+        "description": "EndPoints pour guide",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/guideIndex": {
+            "get": {
+                "summary": "Retourne tout les guides",
+                "operationId": "bb94adf7b023425e5261038e488a312b",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/api/guideStore": {
+            "post": {
+                "summary": "Ajout d'un guide",
+                "operationId": "6dd3473e761db3de43e36d2b4cef44eb",
+                "responses": {
+                    "201": {
+                        "description": "Guide créé avec succes"
+                    },
+                    "422": {
+                        "description": "erreur"
+                    }
+                }
+            }
+        },
+        "/api/guideShow{id}": {
+            "get": {
+                "summary": "Afficher un guide",
+                "operationId": "22773501015377be02e7d3f4c43c521b",
+                "responses": {
+                    "200": {
+                        "description": "succes"
+                    }
+                }
+            }
+        },
+        "/api/guideUpdate{id}": {
+            "patch": {
+                "summary": "Modification d'un guide",
+                "operationId": "f3b16d3994c8d99a4524ee1133895b4f",
+                "responses": {
+                    "201": {
+                        "description": "Guide modifié avec succes"
+                    },
+                    "422": {
+                        "description": "erreur"
+                    }
+                }
+            }
+        },
+        "/api/guideDelete{id}": {
+            "delete": {
+                "summary": "Suppression d'un guide",
+                "operationId": "4891b17cc6fd4b7f511a32587f6be601",
+                "responses": {
+                    "200": {
+                        "description": "Guide supprimé avec succes"
+                    }
+                }
+            }
+        }
+    }
+}

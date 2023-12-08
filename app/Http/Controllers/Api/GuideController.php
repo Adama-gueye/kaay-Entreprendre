@@ -7,11 +7,24 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use OpenApi\Annotations as OA;
 
+/**
+ * @OA\Info(
+ *     description="EndPoints pour guide",
+ *     version="1.0.0",
+ *     title="Swagger Petstore"
+ * )
+ * 
+ */
 class GuideController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * @OA\Get(
+     *     path="/api/guideIndex",
+     *     summary="Retourne tout les guides",
+     *     @OA\Response(response="200", description="Successful operation")
+     * )
      */
     public function index()
     {
@@ -38,12 +51,18 @@ class GuideController extends Controller
     {
         return [
             'titre.required' => 'Desolé! le champ libelle est Obligatoire',
-            'description.required' => 'Desolé! veuillez choisir une description svp',
+            'description.required' => 'Desolé! le champ descrption est obligatoire',
         ];
     }
 
     /**
-     * Store a newly created resource in storage.
+     * 
+     * @OA\Post(
+     *     path="/api/guideStore",
+     *     summary="Ajout d'un guide",
+     *     @OA\Response(response="201", description="Guide créé avec succes"),
+     *     @OA\Response(response="422", description="erreur")
+     * )
      */
     public function store(Request $request)
     {
@@ -64,7 +83,12 @@ class GuideController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * 
+     * @OA\Get(
+     *     path="/api/guideShow{id}",
+     *     summary="Afficher un guide",
+     *     @OA\Response(response="200", description="succes"),
+     * )
      */
     public function show($id)
     {
@@ -81,8 +105,15 @@ class GuideController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * 
+     * @OA\Patch(
+     *     path="/api/guideUpdate{id}",
+     *     summary="Modification d'un guide",
+     *     @OA\Response(response="201", description="Guide modifié avec succes"),
+     *     @OA\Response(response="422", description="erreur")
+     * )
      */
+
     public function update(Request $request, $id)
     {
        $user = Auth::user();
@@ -102,7 +133,12 @@ class GuideController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * 
+     * @OA\Delete(
+     *     path="/api/guideDelete{id}",
+     *     summary="Suppression d'un guide",
+     *     @OA\Response(response="200", description="Guide supprimé avec succes"),
+     * )
      */
     public function destroy($id)
     {
