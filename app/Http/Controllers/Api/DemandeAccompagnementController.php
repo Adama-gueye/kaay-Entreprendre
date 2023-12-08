@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\DemandeAccomagnementFromRequest;
+use Illuminate\Support\Facades\Auth;
 use App\Models\DemandeAccompagnement;
 use App\Traits\ReturnJsonResponseTrait;
-use Illuminate\Http\Request;
+use App\Http\Requests\DemandeAccomagnementFromRequest;
+use Exception;
 
 class DemandeAccompagnementController extends Controller
 {
@@ -56,7 +58,6 @@ class DemandeAccompagnementController extends Controller
     public function store(DemandeAccomagnementFromRequest $request)
     {
         return $this->returnJsonResponse(200, 'SUPER ! C\'est le debut de ton voyage entreprenarial', $request->validated(), DemandeAccompagnement::create($request->all()));
-        
     }
 
     /**
@@ -64,7 +65,7 @@ class DemandeAccompagnementController extends Controller
      */
     public function show(DemandeAccompagnement $demandeAccompagnement)
     {
-        //
+        return $this->returnJsonResponse(200, 'voir plus', $demandeAccompagnement );
     }
 
     /**
@@ -72,15 +73,18 @@ class DemandeAccompagnementController extends Controller
      */
     public function destroy(Request $request)
     {
-        $demandeAccompagnement = DemandeAccompagnement::find($request->demandeAccompagnement);    
-        if ($demandeAccompagnement->user_id !== $demandeAccompagnement->id && $demandeAccompagnement->user->role == 'admin' ) {
-            return $this->returnJsonResponse(422, 'Vous nest pas lauteur de ce demandeAccompagnement', $demandeAccompagnement, NULL);
-        } else {
-            if ($demandeAccompagnement !== null) {
-                return $this->returnJsonResponse(200, 'Le demandeAccompagnement à été bien supprimé ', $demandeAccompagnement, $demandeAccompagnement->delete());
-            } else {
+        try {
+            $demandeAccompagnement = DemandeAccompagnement::find($request->id);
+            if ($demandeAccompagnement == null) {
                 return $this->returnJsonResponse(422, 'Enregistrement introuvable ', $demandeAccompagnement);
             }
+            if ($demandeAccompagnement->user_id !== $demandeAccompagnement->id && $demandeAccompagnement->user->role == 'admin') {
+                return $this->returnJsonResponse(422, 'Vous nest pas lauteur de ce demandeAccompagnement', $demandeAccompagnement, NULL);
+            } else if ($demandeAccompagnement !== null) {
+                return $this->returnJsonResponse(200, 'Le demandeAccompagnement à été bien supprimé ', $demandeAccompagnement, $demandeAccompagnement->delete());
+            }
+        } catch (Exception $e) {
+            return $this->returnJsonResponse(422, 'Enregistrement introuvable ', $e);
         }
     }
 }

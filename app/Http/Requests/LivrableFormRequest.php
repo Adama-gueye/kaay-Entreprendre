@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 
-class DemandeAccomagnementFromRequest extends FormRequest
+class LivrableFormRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,10 +26,9 @@ class DemandeAccomagnementFromRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'titre' => ['required', 'string'],
-            'description' => ['required', 'string'],
-            'objectif' => ['required', 'string'],
-
+            'livrable' => ['required', 'string'],
+            // 'livrable' => ['required', 'mimes:jpeg,png,gif,webp,pdf,doc,docx,ppt,pptx,mp4,avi,mov'],
+            'ressource_id' => ['required', 'integer'],
         ];
     }
 
@@ -37,7 +36,6 @@ class DemandeAccomagnementFromRequest extends FormRequest
     {
         $validator->after(function ($validator) {
             $this->merge([
-                'etat' => 0,
                 'user_id' => auth()->user()->id,
             ]);
         });
@@ -57,9 +55,9 @@ class DemandeAccomagnementFromRequest extends FormRequest
     public function messages()
     {
         return [
-            'titre.required' => 'Le titre doit être fourni',
-            'description.required' => 'La description doit être fournie',
-            'objectif.required' => 'L\'objectif doit être fournie',
+            'livrable.required' => 'Le livrable ne doit pas être vide',
+            'ressource_id.required' => 'Ce livrable nest attaché à aucun module',
+
         ];
     }
 }

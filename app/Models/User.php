@@ -57,6 +57,12 @@ class User extends Authenticatable
     {
         return  $this -> hasMany(PartageExperience::class);
     }
+    
+    public function livrables() : HasMany 
+    {
+        return  $this -> hasMany(Livrable::class);
+    }
+
     public function DemandeProjet() : BelongsToMany
     {
         return $this -> belongsToMany(DemandeProjet::class);

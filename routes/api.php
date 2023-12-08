@@ -1,12 +1,14 @@
 <?php
 
 use App\Http\Controllers\CommentaireController;
-use App\Http\Controllers\GuideController;
+use App\Http\Controllers\Api\GuideController;
 use App\Http\Controllers\UserController;
 use Egulias\EmailValidator\Parser\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\DemandeAccompagnementController;
+use App\Http\Controllers\Api\RessourceController;
+use App\Http\Controllers\Api\LivrableController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,8 +21,6 @@ use App\Http\Controllers\Api\DemandeAccompagnementController;
 |
 */
 
-Route::post('/accompany/create', [DemandeAccompagnementController::class, 'store']);
-Route::delete('/post/{demandeAccompagnement}', [DemandeAccompagnementController::class, 'destroy']);
 
 
 // Route::get('/posts', [PostController::class, 'index']);
@@ -43,5 +43,21 @@ Route::group(['middleware' => 'auth:sanctum'],function(){
     Route::get('/guideShow{id}',[GuideController::class,'show']);
     Route::get('/guideIndex',[GuideController::class,'index']);
     Route::delete('/guideDelete{id}',[GuideController::class,'destroy']);
+    
+    Route::post('/accompany/create', [DemandeAccompagnementController::class, 'store']);
+    Route::delete('/accompany/{id}', [DemandeAccompagnementController::class, 'destroy']);
+    Route::get('/accompany', [DemandeAccompagnementController::class, 'index']);
+    
+    Route::get('/livrable', [LivrableController::class, 'index']);
+    Route::get('/livrable/{id}', [LivrableController::class, 'show']);
+    Route::post('/livrable/create', [LivrableController::class, 'store']);
+    Route::patch('/livrable/{id}', [LivrableController::class, 'update']);
+    Route::delete('/livrable/{id}', [LivrableController::class, 'destroy']);
+
+    // Route::get('/livrable/{id}', [LivrableController::class, 'show']);
+    // Route::post('/livrable/create', [LivrableController::class, 'store']);
+    // Route::patch('/livrable/update{id}', [LivrableController::class, 'update']);   
+    // Route::delete('/livrable/{id}', [LivrableController::class, 'destroy']);
+
 
 });
