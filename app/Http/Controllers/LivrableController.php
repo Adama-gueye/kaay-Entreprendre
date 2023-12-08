@@ -63,6 +63,6 @@ class LivrableController extends Controller
         $pe=Livrable::find($id);
         $pe->contenu =$request->contenue;
         $pe->delete($id);
-        return response()->json(['message' => ' Livrable suprimer avec succès'], 201); 
+        return response()->json(['message' => ' Livrablesuprimer avec succès'], 201); 
     }
 }
