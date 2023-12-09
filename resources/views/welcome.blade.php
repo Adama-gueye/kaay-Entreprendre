@@ -12,7 +12,7 @@
         <p>{{ session('success') }}</p>
     @endif
 
-    <form method="POST" action="{{ route('create')}}">
+    <form method="POST" action="">
         @csrf
 
         <label for="nom">Nom:</label>

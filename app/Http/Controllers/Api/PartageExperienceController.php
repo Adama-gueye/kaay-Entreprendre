@@ -1,66 +1,54 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-namespace App\Http\Controllers;
 
-use App\Models\PartageExperience;
 use Illuminate\Http\Request;
+use App\Models\PartageExperience;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\CreatePostRequest;
+use App\Http\Requests\PartageExperienceRequest;
 use Illuminate\Support\Facades\Auth;
+use App\Traits\ReturnJsonResponseTrait;
+use Illuminate\Database\Eloquent\Model;
 
 class PartageExperienceController extends Controller
 {
-    
-    // public function rules()
-    // {
-    //     return [
-    //         'contenue' => 'required',
-           
-    //     ];
-    // }
-    // public function messages()
-    // {
-    //     return [
-    //         'contenue' => 'Desolé! le champ libelle est Obligatoire',
-           
-    //     ];
-    
-    // }
-   
+
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request)
+    use ReturnJsonResponseTrait;
 
-
+    public function test()
     {
-        $request->validate([
-            "contenue"=> "required",
-            
-           ]);
-           $user=Auth::user();
-          $pe=new PartageExperience ();
-          $pe->contenue=$request->contenue;
-           $pe->user_id=$user->id;
-           $pe->save()  ;
-           
-        return response()->json(['message' => 'Ressource ajouter avec succès'], 201);
-
+        dd('test');
     }
-    public function update(Request $request, $id)
-    {
-        $pe=PartageExperience::find($id);
-        $pe->contenue =$request->contenue;
-        $pe->save();
-        return response()->json(['message' => 'Ressource modifié avec succès'], 201);
 
-        
-    }
-    public function destroy(Request $request,$id)
+    public function index()
     {
-        $pe=PartageExperience::find($id);
-        $pe->contenue =$request->contenue;
+        $partageExperience = PartageExperience::all();
+        return $this->returnJsonResponse(200, 'Liste expériences partagé', $partageExperience);
+    }
+
+    public function creation(CreatePostRequest $request)
+    {
+        return $this->returnJsonResponse(200, 'Votre experience à été ajouté avec sucess', $request->validated(), PartageExperience::create($request->all()));
+    }
+
+    public function update(CreatePostRequest $request, $id)
+    {
+        $partageExperience = PartageExperience::find($id);
+        return auth()->user()->id !== $partageExperience->user_id
+            ? $this->returnJsonResponse(422, 'Vous nest pas lauteur de ce post', $request->validated(), NULL)
+            :  $this->returnJsonResponse(200, 'Votre post à été mis à jour', $partageExperience,  $partageExperience->update($request->validated()));
+    }
+
+    public function destroy(Request $request, $id)
+    {
+        $pe = PartageExperience::find($id);
+        $pe->contenue = $request->contenue;
         $pe->delete($id);
-        return response()->json(['message' => 'Ressource suprimer avec succès'], 201); 
+        return response()->json(['message' => 'Ressource suprimer avec succès'], 201);
     }
 
     /**
@@ -74,10 +62,16 @@ class PartageExperienceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(PartageExperience $partageExperience)
+    public function show(Request $request, $id)
     {
-        //
+        $partageExperience = PartageExperience::find($id);
+        if(! $partageExperience  ){
+            return $this->returnJsonResponse(404, 'Enregistrement innexistant', $partageExperience );
+        }
+        return $this->returnJsonResponse(200, 'voir plus', $partageExperience );
+        
     }
+    
 
     /**
      * Show the form for editing the specified resource.
@@ -90,9 +84,8 @@ class PartageExperienceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-   
+
     /**
      * Remove the specified resource from storage.
      */
-   
 }

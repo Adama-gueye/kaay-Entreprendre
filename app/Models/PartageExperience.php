@@ -11,6 +11,13 @@ class PartageExperience extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'titre',
+        'contenu',
+        'secteurActivite',
+        'user_id',
+        
+    ];
     public function user() : BelongsTo
     {
         return $this -> belongsTo(User::class);

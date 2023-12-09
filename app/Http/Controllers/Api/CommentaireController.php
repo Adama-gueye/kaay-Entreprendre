@@ -1,40 +1,64 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-namespace App\Http\Controllers;
 
 use App\Models\User;
+
+
 use App\Models\Commentaire;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Models\PartageExperience;
+use App\Traits\ReturnJsonResponseTrait;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class CommentaireController extends Controller
 {
+    use ReturnJsonResponseTrait;
     /**
      * Display a listing of the resource.
      */
-    public function index() {
-    
+    public function index()
+    {
+        return $this -> returnJsonResponse(200, 'LISTE DES COMMENTAIRES', Commentaire::all());
     }
-    
 
-    /**
-     * Show the form for creating a new resource.
-     */
+
+    public function rules(): array
+    {
+        return [
+            'commentaire' => ['required', 'string'],
+            'partageExperienceId' => ['required', 'integer'],
+        ];
+    }
+    public function messages()
+    {
+        return [
+            'commentaire.required' => 'Le champ libelle est Obligatoire',
+            'partageExperienceId.required' => 'Ce commentaire n\'es rattaché à aucun partage d\experience',
+        ];
+    }
+
     public function create(Request $request)
     {
-        $request->validate([
-            "commentaire"=> "required",
-            
-           ]);
-           
-           $user=Auth::user();
-          $pe=new Commentaire ();
-          $pe->commentaire=$request->commentaire;
-            $pe->user_id=$user->id;
-           $pe->partage_experience_id=$user->id;
-           $pe->save()  ;
-           
+        $user = Auth::user();
+        $validator = Validator::make($request->all(), $this->rules());
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+         if(! PartageExperience::find($request->partageExperienceId) ){
+            return $this->returnNotFoundJsonResponse('Partage experience ', $request->partageExperienceId);
+         }
+        
+        $user = Auth::user();
+        $partageExperience = new Commentaire();
+        $partageExperience->commentaire = $request->commentaire;
+        $partageExperience->user_id = $user->id;
+        $partageExperience->partage_experience_id = $request->partageExperienceId;
+        $partageExperience->save();
+
         return response()->json(['message' => 'commentaire  ajouter avec succès'], 201);
     }
 
@@ -43,15 +67,18 @@ class CommentaireController extends Controller
      */
     public function store(Request $request)
     {
-        
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Commentaire $commentaire)
+    public function show(Commentaire $commentaire, $id)
     {
-        //
+        $commentaire = Commentaire::find($id);
+        if(! $commentaire){
+            return $this->returnNotFoundJsonResponse('Commentaire');
+        }
+        return $this->returnJsonResponse(200, 'voir plus', $commentaire );
     }
 
     /**
@@ -73,11 +100,11 @@ class CommentaireController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request,$id)
+    public function destroy(Request $request, $id)
     {
-        $pe=Commentaire::find($id);
-        $pe->contenue =$request->contenue;
+        $pe = Commentaire::find($id);
+        $pe->contenue = $request->contenue;
         $pe->delete($id);
-        return response()->json(['message' => 'commentaire suprimer avec succès'], 201); 
+        return response()->json(['message' => 'commentaire suprimer avec succès'], 201);
     }
 }

@@ -63,8 +63,12 @@ class DemandeAccompagnementController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(DemandeAccompagnement $demandeAccompagnement)
+    public function show(Request $request, $id)
     {
+        $demandeAccompagnement = DemandeAccompagnement::find($id);
+        if(! $demandeAccompagnement){
+            return $this->returnNotFoundJsonResponse('Demande D\'accompagnement' );
+        }
         return $this->returnJsonResponse(200, 'voir plus', $demandeAccompagnement );
     }
 
