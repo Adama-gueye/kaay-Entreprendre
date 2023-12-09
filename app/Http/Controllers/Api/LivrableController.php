@@ -18,28 +18,10 @@ class LivrableController extends Controller
      */
     public function index(Request $request)
     {
-       
-
         try {
-            $query = Livrable::query();
-            $perPage = 1;
-            $page = $request->input('page', 1);
-            $search = $request->input('search');
-            if ($search) {
-                $query->whereRaw("title LIKE '%" . $search . "%'");
-            }
-            $total = $query->count();
-            $result = $query->offset(($page - 1) * $perPage)->limit($perPage)->get();
-
-            return response()->json([
-                'status_code' => 'status_code',
-                'status_message' => 'status_message',
-                'current_page' => $page,
-                'last_page' => ceil($total / $perPage),
-                'items' => $result,
-            ]);
+            return $this->returnJsonResponse(200, 'LISTE DES LIVRABLES, LE USER AYANT LIVRE, SUR QUEL RESSOURCE IL A LIVRE ', Livrable::with('ressource', 'user')->get() );
         } catch (Exception $e) {
-            return response()->json($e);
+            return $this->returnJsonResponse(500, 'LE SERVEUR EST HORS LIGNE CONACTER LADMINISTRATEUR', $e);
         }
     }
 
@@ -54,13 +36,13 @@ class LivrableController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(LivrableFormRequest $request)
+    public function store(LivrableFormRequest $request, $ressource_id)
     {
        
-        $existsResource = Ressource::find($request->validated('ressource_id'));
+        $existsResource = Ressource::find($ressource_id);
         if($existsResource === null )
         {
-            return $this->returnJsonResponse(422, 'La ressource de ce livrable est introuvable', $request->validated() );
+            return $this->returnJsonResponse(404, 'La ressource de ce livrable est introuvable', $request->all() );
         }
         return $this->returnJsonResponse(200, 'Livrable ajouté avec succes', $request->validated(), Livrable::create($request->all()));
     }
@@ -72,9 +54,9 @@ class LivrableController extends Controller
     {
         $livrable = Livrable::find( $request->id);
         if($livrable != null){
-            return $this->returnJsonResponse(200, 'Le livrable sélectionné est : ', $livrable);
+            return $this->returnJsonResponse(200, 'Le livrable sélectionné est : ', $livrable->load('ressource', 'user'));
         } else {
-            return $this->returnJsonResponse(400, 'Le livrable sélectionné introuvable : ', $livrable);       
+            return $this->returnJsonResponse(404, 'Le livrable sélectionné introuvable : ', $livrable);       
         }
     }
 
@@ -95,10 +77,10 @@ class LivrableController extends Controller
             $livrable = Livrable::find($request->id);
 
             if (! $livrable-> exists) {
-                return $this->returnJsonResponse(422, 'Enregistrement introuvable ', $livrable);
+                return $this->returnJsonResponse(404, 'Enregistrement introuvable ', $livrable);
             }
             if ($livrable->user_id !== $livrable->id && $livrable->user->role == 'admin') {
-                return $this->returnJsonResponse(422, 'Vous nest pas lauteur de ce livrable', $livrable, NULL);
+                return $this->returnJsonResponse( 401, 'Vous nest pas lauteur de ce livrable', $livrable, NULL);
             } else if ($livrable->exists) {
                 return $this->returnJsonResponse(200, 'Le livrable à été mis à jour ', $livrable, $livrable->updated($request -> validated()));
             }
@@ -113,15 +95,15 @@ class LivrableController extends Controller
         try {
             $livrable = Livrable::find($request->id);
             if ($livrable == null) {
-                return $this->returnJsonResponse(422, 'Enregistrement introuvable ', $livrable);
+                return $this->returnJsonResponse( 401, 'Enregistrement introuvable ', $livrable);
             }
             if ($livrable->user_id !== $livrable->id && $livrable->user->role == 'admin') {
-                return $this->returnJsonResponse(422, 'Vous nest pas lauteur de ce livrable', $livrable, NULL);
+                return $this->returnJsonResponse( 401, 'Vous nest pas lauteur de ce livrable', $livrable, NULL);
             } else if ($livrable !== null) {
                 return $this->returnJsonResponse(200, 'Le livrable à été bien supprimé ', $livrable, $livrable->delete());
             }
         } catch (Exception $e) {
-            return $this->returnJsonResponse(422, 'Enregistrement introuvable ', $e);
+            return $this->returnJsonResponse( 404, 'SERVEUR INTROUVABLE ', $e);
         }
     }
 }

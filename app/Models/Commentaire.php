@@ -2,17 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Commentaire extends Model
 {
     use HasFactory;
 
-    public function reponse() : BelongsTo
+    public function reponses() : HasMany 
     {
-        return $this -> belongsTo(Reponse::class);
+        return $this -> hasMany(Reponse::class);
     }
 
     public function partageExperience() : BelongsTo
@@ -24,4 +25,5 @@ class Commentaire extends Model
     {
         return $this -> belongsTo(User::class);
     }
+
 }

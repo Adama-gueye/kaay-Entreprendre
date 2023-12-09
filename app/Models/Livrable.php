@@ -19,4 +19,8 @@ class Livrable extends Model
     {
         return $this -> belongsTo(User::class);
     }
+    public function ressource() : BelongsTo
+    {
+        return $this -> belongsTo(User::class);
+    }
 }

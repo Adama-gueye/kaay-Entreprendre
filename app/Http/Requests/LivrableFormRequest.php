@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 
-use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 
@@ -27,8 +28,9 @@ class LivrableFormRequest extends FormRequest
     {
         return [
             'livrable' => ['required', 'string'],
+            
             // 'livrable' => ['required', 'mimes:jpeg,png,gif,webp,pdf,doc,docx,ppt,pptx,mp4,avi,mov'],
-            'ressource_id' => ['required', 'integer'],
+
         ];
     }
 
@@ -37,6 +39,7 @@ class LivrableFormRequest extends FormRequest
         $validator->after(function ($validator) {
             $this->merge([
                 'user_id' => auth()->user()->id,
+                'ressource_id' => $this->route('ressourceId'),
             ]);
         });
     }
@@ -56,8 +59,6 @@ class LivrableFormRequest extends FormRequest
     {
         return [
             'livrable.required' => 'Le livrable ne doit pas être vide',
-            'ressource_id.required' => 'Ce livrable nest attaché à aucun module',
-
         ];
     }
 }

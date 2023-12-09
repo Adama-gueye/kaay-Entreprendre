@@ -21,7 +21,7 @@ class CommentaireController extends Controller
      */
     public function index()
     {
-        return $this -> returnJsonResponse(200, 'LISTE DES COMMENTAIRES', Commentaire::all());
+        return $this -> returnJsonResponse(200, 'LISTE DES COMMENTAIRES AINSI QUE LES REPONSES ASSOCIE A CHAQUE COMMENTAIRE', Commentaire::with('reponses')->get());
     }
 
 
@@ -49,7 +49,7 @@ class CommentaireController extends Controller
         }
 
          if(! PartageExperience::find($request->partageExperienceId) ){
-            return $this->returnNotFoundJsonResponse('Partage experience ', $request->partageExperienceId);
+            return $this->returnNotFoundJsonResponse('Partage experience');
          }
         
         $user = Auth::user();
@@ -78,7 +78,7 @@ class CommentaireController extends Controller
         if(! $commentaire){
             return $this->returnNotFoundJsonResponse('Commentaire');
         }
-        return $this->returnJsonResponse(200, 'voir plus', $commentaire );
+        return $this->returnJsonResponse(200, 'voir plus', $commentaire->load('reponses') );
     }
 
     /**
@@ -102,9 +102,11 @@ class CommentaireController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        $pe = Commentaire::find($id);
-        $pe->contenue = $request->contenue;
-        $pe->delete($id);
+        $commentaire = Commentaire::find($id);
+        if(! $commentaire){
+            return $this->returnNotFoundJsonResponse('Commentaire');
+        }
+        $commentaire->delete($id);
         return response()->json(['message' => 'commentaire suprimer avec succès'], 201);
     }
 }

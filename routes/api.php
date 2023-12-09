@@ -36,8 +36,8 @@ Route::post('login', [UserController::class, 'loginUser']);
 Route::post('/register', [UserController::class, 'createCompte']);
 //partage d'experiance
 
- //ShareExperience
- Route::post('/testRoute', [PartageExperienceController::class, 'test'] );
+//ShareExperience
+Route::post('/testRoute', [PartageExperienceController::class, 'test']);
 
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
@@ -45,28 +45,13 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('user', [UserController::class, 'userDetails']);
     Route::get('logout', [UserController::class, 'logout']);
     Route::get('/users', [UserController::class, 'listeUtilisteurs']);
+
+    //guide
     Route::post('/guideStore', [GuideController::class, 'store']);
     Route::patch('/guideUpdate{id}', [GuideController::class, 'update']);
     Route::get('/guideShow{id}', [GuideController::class, 'show']);
     Route::get('/guideIndex', [GuideController::class, 'index']);
     Route::delete('/guideDelete{id}', [GuideController::class, 'destroy']);
-    
-    //partege Expérience
-    Route::get('/experienceIndex', [PartageExperienceController::class, 'index']);
-    Route::get('/experience/{id}', [PartageExperienceController::class, 'show']);
-    Route::post('/experienceStore', [PartageExperienceController::class, 'creation']);
-    Route::put('/experience/update{id}', [PartageExperienceController::class, 'update']);
-    Route::delete('/experience/suprimmer{id}', [PartageExperienceController::class, 'destroy']);
-    
-    //commentaire
-    Route::get('/commentaireIndex', [CommentaireController::class, 'index']);
-    Route::get('/commentaireShow/{id}', [CommentaireController::class, 'show']);
-    Route::post('/commentaire', [CommentaireController::class, 'create']);
-    Route::delete('/commentaire/sup{id}', [CommentaireController::class, 'destroy']);
-
-    //reponse
-    Route::post('/reponse', [ReponseController::class, 'create']);
-    Route::delete('/reponse/sup{id}', [ReponseController::class, 'destroy']);
 
     //ressource
     Route::get('/ressourceIndex', [RessourceController::class, 'index']);
@@ -75,15 +60,42 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::patch('/ressourceUpdate{id}', [RessourceController::class, 'update']);
     Route::get('/ressourceShow{id}', [RessourceController::class, 'show']);
 
-    //livrable
-    Route::get('/ressourceIndex', [LivrableController::class, 'index']);
-    Route::post('/ressourceStore', [LivrableController::class, 'store']);
-
     //acommpagnement
     Route::get('/accompany', [DemandeAccompagnementController::class, 'index']);
     Route::get('/accompany/{id}', [DemandeAccompagnementController::class, 'show']);
     Route::post('/accompany/create', [DemandeAccompagnementController::class, 'store']);
     Route::delete('/accompany/{id}', [DemandeAccompagnementController::class, 'destroy']);
+
+    //livrable
+    Route::get('/livrable/index', [LivrableController::class, 'index']);
+    Route::get('/livrable/show/{id}', [LivrableController::class, 'show']);
+    Route::post('/livrable/store/{ressourceId}', [LivrableController::class, 'store']);
+    Route::delete('/livrable/{id}', [LivrableController::class, 'delete']);
+
+    //partege Expérience
+    Route::get('/experienceIndex', [PartageExperienceController::class, 'index']);
+    Route::get('/experience/{id}', [PartageExperienceController::class, 'show']);
+    Route::post('/experienceStore', [PartageExperienceController::class, 'creation']);
+    Route::put('/experience/update{id}', [PartageExperienceController::class, 'update']);
+    Route::delete('/experience/suprimmer{id}', [PartageExperienceController::class, 'destroy']);
+
+    //commentaire
+    Route::get('/commentaireIndex', [CommentaireController::class, 'index']);
+    Route::get('/commentaireShow/{id}', [CommentaireController::class, 'show']);
+    Route::post('/commentaireCreate', [CommentaireController::class, 'create']);
+    Route::delete('/commentaireDestroy/{id}', [CommentaireController::class, 'destroy']);
+
+    //reponse
+    Route::get('/reponse/index', [ReponseController::class, 'index']);
+    Route::get('/reponse/show/{id}', [ReponseController::class, 'show']);
+    Route::post('/reponse/create{commentaireId}', [ReponseController::class, 'create']);
+    Route::delete('/reponse/{id}', [ReponseController::class, 'destroy']);
+
+
+
+
+
+
 
     Route::get('/livrable', [LivrableController::class, 'index']);
     Route::get('/livrable/{id}', [LivrableController::class, 'show']);

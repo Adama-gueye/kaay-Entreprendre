@@ -1,50 +1,78 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-use App\Http\Controllers\Controller;
 
 use App\Models\Reponse;
+
 use Illuminate\Http\Request;
+use App\Models\PartageExperience;
+use App\Http\Controllers\Controller;
+use App\Models\Commentaire;
+use App\Traits\ReturnJsonResponseTrait;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class ReponseController extends Controller
 {
+    use ReturnJsonResponseTrait;
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        return $this->returnJsonResponse(200, 'LISTE DES REPONSES AINSI QUE LUTILISATEUR AYANT REPONDU ', Reponse::with('commentaire', 'user')->get());
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request ,$id)
+
+    public function rules(): array
     {
-        $request->validate([
-            "reponse"=> "required",
-            
-           ]);
-           
-             $user=Auth::user();
-            $pe=new Reponse ();
-             $pe->commentaire=$request->commentaire;
-            $pe->user_id=$user->id;
-           $pe->commentaire_id=$user->id;
-           $pe->save()  ;
-           
+        return [
+            'reponse' => ['required', 'string'],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'commentaire.required' => 'Le champ commentaire est Obligatoire',
+        ];
+    }
+
+    public function create(Request $request, $commentaireId)
+    {
+
+        $validator = Validator::make($request->all(), $this->rules());
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+         if(! Commentaire::find($commentaireId) ){
+            return $this->returnNotFoundJsonResponse('vous tentez de repondre un commentaire innexistant ');
+        }
+
+        $user = Auth::user()->id;
+        $reponse = new Reponse();
+        $reponse->reponse = $request->reponse;
+        $reponse->user_id  = Auth::user()->id;
+        $reponse->commentaire_id = $request->commentaireId;
+        $reponse->save();
+
         return response()->json(['message' => 'reponse  ajouter avec succès'], 201);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function destroy(Request $request,$id)
+    public function destroy(Request $request, $id)
     {
-        $pe=Reponse::find($id);
-        $pe->repose =$request->contenue;
-        $pe->delete($id);
+        $Reponse = Reponse::find($id);
+        if(! $Reponse){
+            return $this->returnNotFoundJsonResponse('La Reponse que vous essayez de supprimé est ');
+        }
+        $Reponse->delete($id);
         return response()->json(['message' => 'reponse suprimer avec succès'], 201);
     }
     public function store(Request $request)
@@ -55,9 +83,13 @@ class ReponseController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Reponse $reponse)
+    public function show(Reponse $reponse, $id)
     {
-        //
+        $commentaire = Commentaire::find($id);
+        if(! $commentaire){
+            return $this->returnNotFoundJsonResponse('reponse');
+        }
+        return $this->returnJsonResponse(200, 'voir plus', $commentaire->load('reponses') );
     }
 
     /**
@@ -79,5 +111,4 @@ class ReponseController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-   
 }
