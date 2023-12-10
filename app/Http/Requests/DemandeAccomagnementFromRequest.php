@@ -29,7 +29,6 @@ class DemandeAccomagnementFromRequest extends FormRequest
             'titre' => ['required', 'string'],
             'description' => ['required', 'string'],
             'objectif' => ['required', 'string'],
-
         ];
     }
 
@@ -37,7 +36,7 @@ class DemandeAccomagnementFromRequest extends FormRequest
     {
         $validator->after(function ($validator) {
             $this->merge([
-                'etat' => 0,
+                'statut' => 0,
                 'user_id' => auth()->user()->id,
             ]);
         });

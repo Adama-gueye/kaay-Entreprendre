@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\RessourceController;
 use App\Http\Controllers\Api\CommentaireController;
 use App\Http\Controllers\APi\PartageExperienceController;
 use App\Http\Controllers\Api\DemandeAccompagnementController;
+use App\Models\Commentaire;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,18 +27,14 @@ use App\Http\Controllers\Api\DemandeAccompagnementController;
 */
 
 
-
-
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
 Route::post('login', [UserController::class, 'loginUser']);
 Route::post('/register', [UserController::class, 'createCompte']);
+Route::get('/goLogin', [UserController::class, 'goLogin']);
 //partage d'experiance
-
-//ShareExperience
-Route::post('/testRoute', [PartageExperienceController::class, 'test']);
 
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
@@ -47,15 +44,15 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/users', [UserController::class, 'listeUtilisteurs']);
 
     //guide
+    Route::get('/guideIndex', [GuideController::class, 'index']);
     Route::post('/guideStore', [GuideController::class, 'store']);
     Route::patch('/guideUpdate{id}', [GuideController::class, 'update']);
     Route::get('/guideShow{id}', [GuideController::class, 'show']);
-    Route::get('/guideIndex', [GuideController::class, 'index']);
     Route::delete('/guideDelete{id}', [GuideController::class, 'destroy']);
 
     //ressource
     Route::get('/ressourceIndex', [RessourceController::class, 'index']);
-    Route::post('/ressourceStore', [RessourceController::class, 'store']);
+    Route::post('c', [RessourceController::class, 'store']);
     Route::delete('/ressourceDelete{id}', [RessourceController::class, 'destroy']);
     Route::patch('/ressourceUpdate{id}', [RessourceController::class, 'update']);
     Route::get('/ressourceShow{id}', [RessourceController::class, 'show']);
@@ -82,7 +79,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     //commentaire
     Route::get('/commentaireIndex', [CommentaireController::class, 'index']);
     Route::get('/commentaireShow/{id}', [CommentaireController::class, 'show']);
-    Route::post('/commentaireCreate', [CommentaireController::class, 'create']);
+    Route::post('/commentaireCreate/{partageExperienceId}', [CommentaireController::class, 'create']);
     Route::delete('/commentaireDestroy/{id}', [CommentaireController::class, 'destroy']);
 
     //reponse
@@ -92,14 +89,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::delete('/reponse/{id}', [ReponseController::class, 'destroy']);
 
 
-
-
-
-
-
-    Route::get('/livrable', [LivrableController::class, 'index']);
-    Route::get('/livrable/{id}', [LivrableController::class, 'show']);
-    Route::post('/livrable/create', [LivrableController::class, 'store']);
-    Route::patch('/livrable/{id}', [LivrableController::class, 'update']);
-    Route::delete('/livrable/{id}', [LivrableController::class, 'destroy']);
+    // Route::get('/livrable', [LivrableController::class, 'index']);
+    // Route::get('/livrable/{id}', [LivrableController::class, 'show']);
+    // Route::post('/livrable/create', [LivrableController::class, 'store']);
+    // Route::patch('/livrable/{id}', [LivrableController::class, 'update']);
+    // Route::delete('/livrable/{id}', [LivrableController::class, 'destroy']);
 });

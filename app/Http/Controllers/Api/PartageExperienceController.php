@@ -19,11 +19,6 @@ class PartageExperienceController extends Controller
      */
     use ReturnJsonResponseTrait;
 
-    public function test()
-    {
-        dd('test');
-    }
-
     public function index()
     {
         $partageExperience = PartageExperience::all();
@@ -68,8 +63,7 @@ class PartageExperienceController extends Controller
         if(! $partageExperience  ){
             return $this->returnJsonResponse(404, 'Enregistrement innexistant', $partageExperience );
         }
-        return $this->returnJsonResponse(200, 'voir plus', $partageExperience );
-        
+        return $this->returnJsonResponse(200, 'voir plus', $partageExperience->load('commentaires') );
     }
     
 

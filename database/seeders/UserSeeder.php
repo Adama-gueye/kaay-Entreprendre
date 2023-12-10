@@ -19,21 +19,21 @@ class UserSeeder extends Seeder
         //     'prenom' => 'Adama',
         //     'email' => 'adamagu99@gmail.com',
         //     'password' => Hash::make('adamagueye'),
-        //     'role_id' => 1,
+        //     'role' => 1,
         // ]);
         // User::create([
         //     'nom' => '  Toure',
         //     'prenom' => 'Rokhaya',
         //     'email' => 'rokhaya@gmail.com',
         //     'password' => Hash::make('1111'),
-        //     'role_id' => 2,
+        //     'role' => 2,
         // ]);
         // User::create([
         //     'nom' => 'Camar',
         //     'prenom' => 'Mamadou',
         //     'email' => 'mamadou@gmail.com',
         //     'password' => Hash::make('1111'),
-        //     'role_id' => 3,
+        //     'role' => 3,
         // ]);
      $users = [
     [
@@ -42,7 +42,7 @@ class UserSeeder extends Seeder
         'prenom' => 'Adama',
         'email' => 'adamagu99@gmail.com',
         'password' => Hash::make('adamagueye'),
-        'role_id' => 1,
+        'role' => 'admin',
     ],
     [
         'image' => null,
@@ -50,7 +50,7 @@ class UserSeeder extends Seeder
         'prenom' => 'Rokhaya',
         'email' => 'rokhaya@gmail.com',
         'password' => Hash::make('1111'),
-        'role_id' => 2,
+        'role' => 'experimente',
     ],
     [
         'image' => null,
@@ -58,7 +58,7 @@ class UserSeeder extends Seeder
         'prenom' => 'Mamadou',
         'email' => 'mamadou@gmail.com',
         'password' => Hash::make('1111'),
-        'role_id' => 3,
+        'role' => 'novice',
     ],
 ];
 foreach ($users as $key => $user) {

@@ -2,16 +2,22 @@
 
 namespace App\Http\Controllers\Api;
 
+use Exception;
+
+
 use App\Models\User;
-
-
 use App\Models\Commentaire;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Models\PartageExperience;
-use App\Traits\ReturnJsonResponseTrait;
+use Illuminate\Http\JsonResponse;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Traits\ReturnJsonResponseTrait;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Validator;
+
+
+
 
 class CommentaireController extends Controller
 {
@@ -21,7 +27,15 @@ class CommentaireController extends Controller
      */
     public function index()
     {
-        return $this -> returnJsonResponse(200, 'LISTE DES COMMENTAIRES AINSI QUE LES REPONSES ASSOCIE A CHAQUE COMMENTAIRE', Commentaire::with('reponses')->get());
+        return $this->returnJsonResponse(200, 'LISTE DES COMMENTAIRES AINSI QUE LES REPONSES ASSOCIE A CHAQUE COMMENTAIRE', Commentaire::with([
+            'reponses', 
+            'user' => function($query){
+                $query->select('id', 'nom', 'prenom', 'email');
+            },
+            'partageExperience'=> function($query){
+                $query->select('id', 'titre', 'contenu');
+            },
+        ])->paginate(3));
     }
 
 
@@ -29,37 +43,45 @@ class CommentaireController extends Controller
     {
         return [
             'commentaire' => ['required', 'string'],
-            'partageExperienceId' => ['required', 'integer'],
+
         ];
     }
     public function messages()
     {
         return [
-            'commentaire.required' => 'Le champ libelle est Obligatoire',
-            'partageExperienceId.required' => 'Ce commentaire n\'es rattaché à aucun partage d\experience',
+            'commentaire.required' => 'Le champ commentaire est Obligatoire',
+
         ];
     }
 
-    public function create(Request $request)
+    public function create(Request $request, $partageExperienceId, Commentaire $commentaire)
     {
-        $user = Auth::user();
-        $validator = Validator::make($request->all(), $this->rules());
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+
+        $this->authorize('create', $commentaire);
+        try {
+
+            $user = Auth::user();
+            $validator = Validator::make($request->all(), $this->rules(), $this->messages());
+
+            if ($validator->fails()) {
+                return response()->json(['errors' => $validator->errors()], 422);
+            }
+
+            if (!PartageExperience::find($partageExperienceId)) {
+                return $this->returnNotFoundJsonResponse('Partage experience');
+            }
+
+            $user = Auth::user();
+            $partageExperience = new Commentaire();
+            $partageExperience->commentaire = $request->commentaire;
+            $partageExperience->user_id = $user->id;
+            $partageExperience->partage_experience_id = $request->partageExperienceId;
+            $partageExperience->save();
+
+            return response()->json(['message' => 'commentaire  ajouter avec succès'], 201);
+        } catch (Exception $e) {
+            return $this->returnAuthorizationJsonResponse();
         }
-
-         if(! PartageExperience::find($request->partageExperienceId) ){
-            return $this->returnNotFoundJsonResponse('Partage experience');
-         }
-        
-        $user = Auth::user();
-        $partageExperience = new Commentaire();
-        $partageExperience->commentaire = $request->commentaire;
-        $partageExperience->user_id = $user->id;
-        $partageExperience->partage_experience_id = $request->partageExperienceId;
-        $partageExperience->save();
-
-        return response()->json(['message' => 'commentaire  ajouter avec succès'], 201);
     }
 
     /**
@@ -67,6 +89,7 @@ class CommentaireController extends Controller
      */
     public function store(Request $request)
     {
+
     }
 
     /**
@@ -75,38 +98,27 @@ class CommentaireController extends Controller
     public function show(Commentaire $commentaire, $id)
     {
         $commentaire = Commentaire::find($id);
-        if(! $commentaire){
+        if (!$commentaire) {
             return $this->returnNotFoundJsonResponse('Commentaire');
         }
-        return $this->returnJsonResponse(200, 'voir plus', $commentaire->load('reponses') );
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Commentaire $commentaire)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Commentaire $commentaire)
-    {
-        //
+        return $this->returnJsonResponse(200, 'voir plus', $commentaire->load('reponses'));
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request, $id)
+    public function destroy(Request $request, $id, Commentaire $commentaire ): JsonResponse
     {
-        $commentaire = Commentaire::find($id);
-        if(! $commentaire){
-            return $this->returnNotFoundJsonResponse('Commentaire');
+        $this->authorize('delete', $commentaire);
+        try {
+            $commentaire = Commentaire::find($id);
+            if (!$commentaire) {
+                return $this->returnNotFoundJsonResponse('Commentaire');
+            }
+            $commentaire->delete($commentaire);
+            return response()->json(['message' => 'commentaire suprimer avec succès'], 201);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 404);
         }
-        $commentaire->delete($id);
-        return response()->json(['message' => 'commentaire suprimer avec succès'], 201);
     }
 }

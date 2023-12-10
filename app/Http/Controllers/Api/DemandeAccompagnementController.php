@@ -20,6 +20,7 @@ class DemandeAccompagnementController extends Controller
      */
     public function index(Request $request)
     {
+        $this->authorize('store', DemandeAccompagnement::class);
         try {
 
             $query = DemandeAccompagnement::query();
@@ -49,13 +50,17 @@ class DemandeAccompagnementController extends Controller
      */
     public function create()
     {
+     
         return 'le formulaire d\'accompagnment ';
+        
+        
     }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(DemandeAccomagnementFromRequest $request)
+
     {
         return $this->returnJsonResponse(200, 'SUPER ! C\'est le debut de ton voyage entreprenarial', $request->validated(), DemandeAccompagnement::create($request->all()));
     }

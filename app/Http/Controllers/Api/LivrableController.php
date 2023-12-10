@@ -73,9 +73,7 @@ class LivrableController extends Controller
      */
     public function update(LivrableFormRequest $request)
     {
-    
             $livrable = Livrable::find($request->id);
-
             if (! $livrable-> exists) {
                 return $this->returnJsonResponse(404, 'Enregistrement introuvable ', $livrable);
             }
@@ -84,7 +82,6 @@ class LivrableController extends Controller
             } else if ($livrable->exists) {
                 return $this->returnJsonResponse(200, 'Le livrable à été mis à jour ', $livrable, $livrable->updated($request -> validated()));
             }
-       
     }
 
     /**

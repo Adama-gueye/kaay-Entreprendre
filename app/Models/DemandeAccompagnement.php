@@ -14,8 +14,9 @@ class DemandeAccompagnement extends Model
         'titre',
         'description',
         'objectif',
-        'etat',
+        'statut',
         'user_id',
+    
     ];
 
     public function user() : BelongsTo
