@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Livrable;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,10 +14,10 @@ return new class extends Migration
     {
         Schema::create('ressources', function (Blueprint $table) {
             $table->id();
-            $table->string('nom');
             $table->string('titre');
             $table->string('objectif');
-            $table->string('consign');
+            $table->string('consigne');
+            $table->enum('etat',['activer','desactiver']);
             $table->unsignedBigInteger('guide_id');
             $table->foreign('guide_id')->references('id')->on('guides')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();

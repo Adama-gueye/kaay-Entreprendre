@@ -1,24 +1,41 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
+use App\Http\Controllers\Controller;
 
 use App\Models\User;
 use App\Models\Commentaire;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use OpenApi\Annotations as OA;
 
 class CommentaireController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+
+     
+/**
+ * @OA\Info(
+ *     description="Endpoind commentaire",
+ *     version="1.0.0",
+ *     title="Swagger Petstore"
+ * )
+ * 
+ */
     public function index() {
     
     }
     
 
-    /**
-     * Show the form for creating a new resource.
+     /**
+     * @OA\Post(
+     *     path="/api/user",
+     *     summary="Retourne cree des commentaires",
+     *     @OA\Response(response="201", description="Successful operation")
+     *    
+     * )
      */
     public function create(Request $request)
     {
@@ -36,7 +53,21 @@ class CommentaireController extends Controller
            
         return response()->json(['message' => 'commentaire  ajouter avec succès'], 201);
     }
-
+     /**
+     * @OA\delete(
+     *     path="/api/user",
+     *     summary="Retourne suprimmer des commentaires",
+     *     @OA\Response(response="201", description="Successful operation")
+     *    
+     * )
+     */
+    public function destroy(Request $request,$id)
+    {
+        $pe=Commentaire::find($id);
+        $pe->contenue =$request->contenue;
+        $pe->delete($id);
+        return response()->json(['message' => 'commentaire suprimer avec succès'], 200); 
+    }
     /**
      * Store a newly created resource in storage.
      */
@@ -48,9 +79,19 @@ class CommentaireController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Commentaire $commentaire)
+
+       /**
+     * @OA\Get(
+     *     path="/api/user",
+     *     summary="Retourne suprimmer des commentaires",
+     *     @OA\Response(response="201", description="Successful operation")
+     *    
+     * )
+     */
+    public function show()
     {
-        //
+        $commentaire = Commentaire::all();
+        return response()->json(compact('commentaire'),200);
     }
 
     /**
@@ -72,11 +113,5 @@ class CommentaireController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request,$id)
-    {
-        $pe=Commentaire::find($id);
-        $pe->contenue =$request->contenue;
-        $pe->delete($id);
-        return response()->json(['message' => 'commentaire suprimer avec succès'], 201); 
-    }
+    
 }

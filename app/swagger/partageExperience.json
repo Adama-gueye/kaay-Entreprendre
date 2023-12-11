@@ -1,0 +1,48 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Swagger Petstore",
+        "description": "Endpoind PartageExperience",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/user": {
+            "get": {
+                "summary": "Retourne lister les partage d'experiance",
+                "operationId": "387d42214db77ea3b8979c36005602e6",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "put": {
+                "summary": "Retourne modifier une partage d'experiance",
+                "operationId": "dae3333a1ffab6f4a4aaf1bb4d2fcc98",
+                "responses": {
+                    "201": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Retourne cree une partage d'experiance",
+                "operationId": "a647d9db5795b3a871dec09bf389836e",
+                "responses": {
+                    "201": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Retourne suprimer une partage d'experiance",
+                "operationId": "1791e9eba82718d4db3de971b9e665f5",
+                "responses": {
+                    "201": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        }
+    }
+}

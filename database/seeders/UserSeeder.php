@@ -37,6 +37,7 @@ class UserSeeder extends Seeder
         // ]);
      $users = [
     [
+        'image' => null,
         'nom' => 'Gueye',
         'prenom' => 'Adama',
         'email' => 'adamagu99@gmail.com',
@@ -44,6 +45,7 @@ class UserSeeder extends Seeder
         'role_id' => 1,
     ],
     [
+        'image' => null,
         'nom' => 'Toure',
         'prenom' => 'Rokhaya',
         'email' => 'rokhaya@gmail.com',
@@ -51,6 +53,7 @@ class UserSeeder extends Seeder
         'role_id' => 2,
     ],
     [
+        'image' => null,
         'nom' => 'Camar',
         'prenom' => 'Mamadou',
         'email' => 'mamadou@gmail.com',
