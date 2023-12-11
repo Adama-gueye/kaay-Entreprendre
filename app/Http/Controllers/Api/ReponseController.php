@@ -1,17 +1,19 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-use App\Models\Reponse;
+use Exception;
 
+use App\Models\Reponse;
+use App\Models\Commentaire;
 use Illuminate\Http\Request;
+use OpenApi\Annotations as OA;
 use App\Models\PartageExperience;
 use App\Http\Controllers\Controller;
-use App\Models\Commentaire;
-use App\Traits\ReturnJsonResponseTrait;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 
-use OpenApi\Annotations as OA;
+use App\Traits\ReturnJsonResponseTrait;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 /**
  * @OA\Info(
  *     description="Endpoind commentaire",
@@ -30,10 +32,6 @@ class ReponseController extends Controller
     {
         return $this->returnJsonResponse(200, 'LISTE DES REPONSES AINSI QUE LUTILISATEUR AYANT REPONDU ', Reponse::with('commentaire', 'user')->get());
     }
-
-    
-
-   
 
   /**
      * @OA\Post(
@@ -58,19 +56,20 @@ class ReponseController extends Controller
         ];
     }
 
-    public function create(Request $request, $commentaireId)
+    public function create(Request $request, Commentaire $commentaire)
     {
+
+        $this->authorize('create', $commentaire);
 
         $validator = Validator::make($request->all(), $this->rules());
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-         if(! Commentaire::find($commentaireId) ){
+         if(! Commentaire::find($request->commentaireId) ){
             return $this->returnNotFoundJsonResponse('vous tentez de repondre un commentaire innexistant ');
         }
 
-        $user = Auth::user()->id;
         $reponse = new Reponse();
         $reponse->reponse = $request->reponse;
         $reponse->user_id  = Auth::user()->id;
@@ -92,18 +91,16 @@ class ReponseController extends Controller
      *    
      * )
      */
-    public function destroy(Request $request, $id)
+    public function destroy(Request $request, Commentaire $commentaire)
     {
-        $Reponse = Reponse::find($id);
+        
+        $Reponse = Reponse::find($request->id);
+        $this->authorize('delete', $Reponse);
         if(! $Reponse){
             return $this->returnNotFoundJsonResponse('La Reponse que vous essayez de supprimé est ');
         }
-        $Reponse->delete($id);
+        $Reponse->delete($Reponse);
         return response()->json(['message' => 'reponse suprimer avec succès'], 201);
-    }
-    public function store(Request $request)
-    {
-        //
     }
 
     /**
@@ -134,9 +131,18 @@ class ReponseController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Reponse $reponse)
-    {
-        //
+    public function update(Request $request)
+    {       
+        try {  
+        
+            return $this-> returnJsonResponse(200, 'Reponse envoyé', Reponse::findOrFail($request->id), Reponse::findOrFail($request->id)->save(), Commentaire::findOrFail($request->id->commentaire_id) );
+        
+        } catch (ModelNotFoundException $error) {
+            return response()->json(['message' => $error->getMessage()], 404);
+        } catch (Exception $error) {
+            return response()->json(['message' => $error->getMessage()], 403);
+        }
+        
     }
 
     /**

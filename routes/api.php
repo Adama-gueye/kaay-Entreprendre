@@ -86,6 +86,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/experience/{id}', [PartageExperienceController::class, 'show']);
     Route::post('/experienceStore', [PartageExperienceController::class, 'creation']);
     Route::put('/experience/update{id}', [PartageExperienceController::class, 'update']);
+    Route::patch('/experience/edit{id}', [PartageExperienceController::class, 'edit']);
     Route::delete('/experience/suprimmer{id}', [PartageExperienceController::class, 'destroy']);
 
     //commentaire

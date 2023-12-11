@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use App\Traits\ReturnJsonResponseTrait;
 use App\Http\Requests\LivrableFormRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use OpenApi\Annotations as OA;
 
 /**
  * @OA\Info(
@@ -25,7 +26,7 @@ class LivrableController extends Controller
 
      /**
      * @OA\Get(
-     *     path="/api/livrable",
+     *     path="/api/livrable/index,
      *     summary="Retourne tout les livrables",
      *     @OA\Response(response="200", description="Successful operation")
      * )
@@ -47,7 +48,7 @@ class LivrableController extends Controller
     /**
      * 
      * @OA\Post(
-     *     path="api/livrable/create",
+     *     path="api/livrable/store/{ressourceId}",
      *     summary="Ajout d'un livrable",
      *     @OA\Response(response="201", description="Livrable créé avec succes"),
      *     @OA\Response(response="422", description="livrable introuvable")
@@ -57,7 +58,6 @@ class LivrableController extends Controller
     {
         $this->authorize('store', $livrable);
         $existsResource = Ressource::find($request->ressourceId);
-
         if ($existsResource === null) {
             return $this->returnJsonResponse(404, 'La ressource de ce livrable est introuvable', $request->all());
         }
@@ -67,7 +67,7 @@ class LivrableController extends Controller
     /**
      * 
      * @OA\Get(
-     *     path="/api/livrable{id}",
+     *     path="/api/livrable/show/{id}",
      *     summary="Afficher un livrable",
      *     @OA\Response(response="200", description="succes"),
      *     @OA\Response(response="400", description="erreur"),

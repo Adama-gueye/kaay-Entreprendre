@@ -8,6 +8,7 @@ use App\Models\Guide;
 use App\Models\Ressource;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Traits\ReturnJsonResponseTrait;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -24,6 +25,7 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
  */
 class RessourceController extends Controller
 {
+    use ReturnJsonResponseTrait;
     /**
      * @OA\Get(
      *     path="/api/ressourceIndex",
@@ -103,7 +105,7 @@ class RessourceController extends Controller
             return response()->json(['message' => 'Ressource créé avec succès'], 201);
             
         } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], 404);
+            return $this->returnNotFoundJsonResponse('Guide associé à cette ressource');
         }
 
       
@@ -146,29 +148,30 @@ class RessourceController extends Controller
      *     @OA\Response(response="422", description="erreur")
      * )
      */
-    public function update(Request $request, $id, Ressource $ressource)
+    public function update(Request $request, Ressource $ressource)
     {
         try {
             $this->authorize('update', $ressource);
             $user = Auth::user();
             $validator = Validator::make($request->all(), $this->rules());
-    
+            
             if ($validator->fails()) {
                 return response()->json(['errors' => $validator->errors()], 422);
             }
-    
-            $ressource = Ressource::find($id);
+            
+            $ressource = Ressource::findOrFail($request->id);
+            
             $ressource->titre = $request->titre;
             $ressource->objectif = $request->objectif;
             $ressource->consigne = $request->consigne;
             $ressource->etat = $request->etat;
-            $ressource->guide_id = 1;
+            $ressource->guide_id = $ressource->guide_id;
             $ressource->save();
     
             return response()->json(['message' => 'Ressource modifié avec succès'], 201);
         
         } catch (ModelNotFoundException $error ) {
-            return response()->json(['message' => $error->getMessage()], 403);
+            return $this->returnNotFoundJsonResponse('La ressouce est ');
         } catch (Exception $error) {
             return response()->json(['message' => $error->getMessage()], 404);
         }

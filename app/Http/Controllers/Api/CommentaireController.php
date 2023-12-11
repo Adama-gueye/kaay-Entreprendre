@@ -15,22 +15,29 @@ use Illuminate\Support\Facades\Auth;
 use App\Traits\ReturnJsonResponseTrait;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Validator;
-use OpenApi\Annotations as OA;
+use OpenApi\Annotations as OA;  // Make sure this line is correct
 
+/**
+ * @OA\Info(
+ *     description="Endpoint commentaire",
+ *     version="1.0.0",
+ *     title="Swagger Petstore"
+ * )
+ * @OA\PathItem()
+ */
 class CommentaireController extends Controller
 {
     use ReturnJsonResponseTrait;
+
     /**
-     * Display a listing of the resource.
-     */
-    /**
-     * @OA\Info(
-     *     description="Endpoind commentaire",
-     *     version="1.0.0",
-     *     title="Swagger Petstore"
+     * @OA\Get(
+     *     path="/api/commentaireIndex",
+     *     summary="Retourne cree des commentaires",
+     *     @OA\Response(response="201", description="Successful operation")
+     *    
      * )
-     * 
      */
+
     public function index()
     {
         return $this->returnJsonResponse(200, 'LISTE DES COMMENTAIRES AINSI QUE LES REPONSES ASSOCIE A CHAQUE COMMENTAIRE', Commentaire::with([
@@ -46,7 +53,7 @@ class CommentaireController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/api/user",
+     *     path="/api/commentaireCreate/{partageExperienceId}",
      *     summary="Retourne cree des commentaires",
      *     @OA\Response(response="201", description="Successful operation")
      *    
@@ -99,7 +106,7 @@ class CommentaireController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/user",
+     *     path="/api/commentaireShow/{id}",
      *     summary="Retourne suprimmer des commentaires",
      *     @OA\Response(response="201", description="Successful operation")
      *    
@@ -116,7 +123,7 @@ class CommentaireController extends Controller
 
     /**
      * @OA\delete(
-     *     path="/api/user",
+     *     path="/api/commentaireDestroy/{id}",
      *     summary="Retourne suprimmer des commentaires",
      *     @OA\Response(response="201", description="Successful operation")
      *    

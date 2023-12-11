@@ -21,7 +21,7 @@ class ReponsePolicy
      */
     public function view(User $user, Reponse $reponse): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -29,18 +29,22 @@ class ReponsePolicy
      */
     public function create(User $user): bool
     {
-        return $user->role === 'experimente' || 'novice'
-                ? Response::allow()
-                : Response::deny('Vous n\'avez pas l\'autorisation requise.');
+        return $user->role === 'experimente' || 'novice';
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function show (User $user, Reponse $reponse): bool
+    public function show(User $user, Reponse $reponse): bool
     {
+
+        return true;
+    }
+
+    public function update(User $user, Reponse $reponse): bool
+    {
+        return  $user->id === $reponse->user_id;
         
-       
     }
 
     /**
@@ -48,24 +52,7 @@ class ReponsePolicy
      */
     public function destroy(User $user, Reponse $reponse): bool
     {
-        return $user->role === 'experimente' || 'novice'
-        ? Response::allow()
-        : Response::deny('Vous n\'avez pas l\'autorisation requise.');
+        return $user->role === 'admin' || $user->id === $reponse->user_id;
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Reponse $reponse): bool
-    {
-        
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Reponse $reponse): bool
-    {
-        //
-    }
 }

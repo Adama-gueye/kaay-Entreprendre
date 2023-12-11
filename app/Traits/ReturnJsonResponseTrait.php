@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 trait ReturnJsonResponseTrait
 {
-    public function returnJsonResponse($statusCode, $statusMessage, $data, $EloquentQuery = null)
+    public function returnJsonResponse($statusCode, $statusMessage, $data, $EloquentQuery = null, $anotherQuery = null)
     {
         try {
             return response()->json([
