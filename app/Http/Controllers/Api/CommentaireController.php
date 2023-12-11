@@ -4,13 +4,13 @@ namespace App\Http\Controllers\Api;
 
 use Exception;
 
+use App\Http\Controllers\Controller;
 
 use App\Models\User;
 use App\Models\Commentaire;
 use Illuminate\Http\Request;
 use App\Models\PartageExperience;
 use Illuminate\Http\JsonResponse;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Traits\ReturnJsonResponseTrait;
 use Illuminate\Http\RedirectResponse;
@@ -19,25 +19,47 @@ use Illuminate\Support\Facades\Validator;
 
 
 
+
+
+use OpenApi\Annotations as OA;
+
 class CommentaireController extends Controller
 {
     use ReturnJsonResponseTrait;
     /**
      * Display a listing of the resource.
      */
+
+
+    /**
+     * @OA\Info(
+     *     description="Endpoind commentaire",
+     *     version="1.0.0",
+     *     title="Swagger Petstore"
+     * )
+     * 
+     */
     public function index()
     {
         return $this->returnJsonResponse(200, 'LISTE DES COMMENTAIRES AINSI QUE LES REPONSES ASSOCIE A CHAQUE COMMENTAIRE', Commentaire::with([
-            'reponses', 
-            'user' => function($query){
+            'reponses',
+            'user' => function ($query) {
                 $query->select('id', 'nom', 'prenom', 'email');
             },
-            'partageExperience'=> function($query){
+            'partageExperience' => function ($query) {
                 $query->select('id', 'titre', 'contenu');
             },
         ])->paginate(3));
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/user",
+     *     summary="Retourne cree des commentaires",
+     *     @OA\Response(response="201", description="Successful operation")
+     *    
+     * )
+     */
 
     public function rules(): array
     {
@@ -53,7 +75,7 @@ class CommentaireController extends Controller
         ];
     }
 
-    public function create(Request $request, $partageExperienceId, Commentaire $commentaire)
+    public function create(Request $request,  Commentaire $commentaire)
     {
 
         $this->authorize('create', $commentaire);
@@ -66,7 +88,7 @@ class CommentaireController extends Controller
                 return response()->json(['errors' => $validator->errors()], 422);
             }
 
-            if (!PartageExperience::find($partageExperienceId)) {
+            if (!PartageExperience::find($request->partageExperienceId)) {
                 return $this->returnNotFoundJsonResponse('Partage experience');
             }
 
@@ -84,15 +106,12 @@ class CommentaireController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-
-    }
-
-    /**
-     * Display the specified resource.
+     * @OA\Get(
+     *     path="/api/user",
+     *     summary="Retourne suprimmer des commentaires",
+     *     @OA\Response(response="201", description="Successful operation")
+     *    
+     * )
      */
     public function show(Commentaire $commentaire, $id)
     {
@@ -104,9 +123,18 @@ class CommentaireController extends Controller
     }
 
     /**
+     * @OA\delete(
+     *     path="/api/user",
+     *     summary="Retourne suprimmer des commentaires",
+     *     @OA\Response(response="201", description="Successful operation")
+     *    
+     * )
+     */
+
+    /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request, $id, Commentaire $commentaire ): JsonResponse
+    public function destroy(Request $request, $id, Commentaire $commentaire)
     {
         $this->authorize('delete', $commentaire);
         try {

@@ -12,13 +12,26 @@ use App\Http\Requests\DemandeAccomagnementFromRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpFoundation\Response;
 
+
+/**
+ * @OA\Info(
+ *     description="EndPoints pour demande accompagnement",
+ *     version="1.0.0",
+ *     title="Swagger Petstore"
+ * )
+ * 
+ */
 class DemandeAccompagnementController extends Controller
 {
 
     use ReturnJsonResponseTrait;
 
     /**
-     * Display a listing of the resource.
+     * @OA\Get(
+     *     path="/api/accompany",
+     *     summary="Retourne tout les demandes",
+     *     @OA\Response(response="200", description="Successful operation")
+     * )
      */
     public function index(Request $request, DemandeAccompagnement $demandeAccompagnement)
     {
@@ -39,23 +52,26 @@ class DemandeAccompagnementController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * 
+     * @OA\Post(
+     *     path="/api/accompany/create",
+     *     summary="Ajout d'un guide",
+     *     @OA\Response(response="201", description="Demande Accompagnement créé avec succes"),
+     *     @OA\Response(response="422", description="erreur")
+     * )
      */
     public function store(DemandeAccomagnementFromRequest $request, DemandeAccompagnement $demandeAccompagnement)
     {
-
-        try {
-            $this->authorize('store', $demandeAccompagnement);
-            return $this->returnJsonResponse(200, 'SUPER ! Votre accompagnement est enregistré.  C\'est le debut de ton voyage entreprenarial', $request->validated(), DemandeAccompagnement::create($request->all()));
-        } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
-        } catch (Exception $e) {
-            return response()->json(['message' => $e->getMessage()], Response::HTTP_FORBIDDEN);
-        }
+        return $this->returnJsonResponse(200, 'SUPER ! C\'est le debut de ton voyage entreprenarial', $request->validated(), DemandeAccompagnement::create($request->all()));
     }
 
     /**
-     * Display the specified resource.
+     * 
+     * @OA\Get(
+     *     path="/api/accompany{id}",
+     *     summary="Afficher une demande d'accompagnement",
+     *     @OA\Response(response="200", description="succes"),
+     * )
      */
     public function show(Request $request)
     {
@@ -74,7 +90,13 @@ class DemandeAccompagnementController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * 
+     * @OA\Delete(
+     *     path="/api/accompany{id}",
+     *     summary="Suppression d'une demande d'accompagnement",
+     *     @OA\Response(response="200", description="Demande supprimé avec succes"),
+     *     @OA\Response(response="422", description="erreur"),
+     * )
      */
     public function destroy(Request $request)
     {

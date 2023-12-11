@@ -2,19 +2,33 @@
 
 namespace App\Http\Controllers\Api;
 
+use Exception;
 use App\Models\Guide;
 use Illuminate\Http\Request;
+use OpenApi\Annotations as OA;
 use App\Http\Controllers\Controller;
-use App\Traits\ReturnJsonResponseTrait;
-use Exception;
 use Illuminate\Support\Facades\Auth;
+use App\Traits\ReturnJsonResponseTrait;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
+/**
+ * @OA\Info(
+ *     description="EndPoints pour guide",
+ *     version="1.0.0",
+ *     title="Swagger Petstore"
+ * )
+ * 
+ */
 class GuideController extends Controller
 {
     use ReturnJsonResponseTrait;
     /**
-     * Display a listing of the resource.
+     * @OA\Get(
+     *     path="/api/guideIndex",
+     *     summary="Retourne tout les guides",
+     *     @OA\Response(response="200", description="Successful operation")
+     * )
      */
     public function index(Guide $guide)
     {
@@ -46,12 +60,18 @@ class GuideController extends Controller
     {
         return [
             'titre.required' => 'Desolé! le champ libelle est Obligatoire',
-            'description.required' => 'Desolé! veuillez choisir une description svp',
+            'description.required' => 'Desolé! le champ descrption est obligatoire',
         ];
     }
 
     /**
-     * Store a newly created resource in storage.
+     * 
+     * @OA\Post(
+     *     path="/api/guideStore",
+     *     summary="Ajout d'un guide",
+     *     @OA\Response(response="201", description="Guide créé avec succes"),
+     *     @OA\Response(response="422", description="erreur")
+     * )
      */
     public function store(Request $request, Guide $guide)
     {
@@ -84,7 +104,12 @@ class GuideController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * 
+     * @OA\Get(
+     *     path="/api/guideShow{id}",
+     *     summary="Afficher un guide",
+     *     @OA\Response(response="200", description="succes"),
+     * )
      */
     public function show($id, Guide $guide)
     {
@@ -107,21 +132,20 @@ class GuideController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * 
+     * @OA\Patch(
+     *     path="/api/guideUpdate{id}",
+     *     summary="Modification d'un guide",
+     *     @OA\Response(response="201", description="Guide modifié avec succes"),
+     *     @OA\Response(response="422", description="erreur")
+     * )
      */
-    public function update(Request $request, $id, Guide $guide)
+    public function update(Request $request, Guide $guide)
     {
 
         $this->authorize('update', $guide);
         try {
             $guideUpdated = Guide::findOrFail($request->id);
-           
-        } catch (Exception $error) {
-            return response()->json(['message' => 'Enregistrement innexistant']);
-        }
-
-        try {
-           
             $user = Auth::user();
             $validator = Validator::make($request->all(), $this->rules(), $this->messages());
 
@@ -134,13 +158,21 @@ class GuideController extends Controller
             $guideUpdated->user_id = $user->id;
             $guideUpdated->save();
             return response()->json(['message' => 'Guide modifié avec succès'], 201);
+
+        } catch (ModelNotFoundException $error) {
+            return response()->json(['message' => $error->getMessage()], 404);
         } catch (Exception $error) {
-            return response()->json(['message' => $error->getMessage()]);
+            return response()->json(['message' => $error->getMessage()], 403);
         }
     }
 
     /**
-     * Remove the specified resource from storage.
+     * 
+     * @OA\Delete(
+     *     path="/api/guideDelete{id}",
+     *     summary="Suppression d'un guide",
+     *     @OA\Response(response="200", description="Guide supprimé avec succes"),
+     * )
      */
     public function destroy($id, Guide $guide)
     {

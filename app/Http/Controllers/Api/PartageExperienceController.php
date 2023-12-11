@@ -1,16 +1,24 @@
 <?php
 
 namespace App\Http\Controllers\Api;
+use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use App\Models\PartageExperience;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\CreatePostRequest;
 use App\Http\Requests\PartageExperienceRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Traits\ReturnJsonResponseTrait;
 use Illuminate\Database\Eloquent\Model;
 
+use OpenApi\Annotations as OA;
+ /**
+    * @OA\Info(
+    *     description="Endpoind PartageExperience",
+    *     version="1.0.0",
+    *     title="Swagger Petstore"
+    * )
+    */
 class PartageExperienceController extends Controller
 {
 
@@ -52,9 +60,8 @@ class PartageExperienceController extends Controller
     {
         //
     }
-
-    /**
-     * Display the specified resource.
+ /**
+     * Show the form for creating a new resource.
      */
     public function show(Request $request, $id)
     {

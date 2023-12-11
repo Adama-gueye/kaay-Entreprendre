@@ -14,10 +14,22 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 
+/**
+ * @OA\Info(
+ *     description="EndPoints pour ressource",
+ *     version="1.0.0",
+ *     title="Swagger Petstore"
+ * )
+ * 
+ */
 class RessourceController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * @OA\Get(
+     *     path="/api/ressourceIndex",
+     *     summary="Retourne tout les ressources",
+     *     @OA\Response(response="200", description="Successful operation")
+     * )
      */
     public function index(Ressource $ressource)
     {
@@ -61,7 +73,13 @@ class RessourceController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * 
+     * @OA\Post(
+     *     path="/api/ressourceStore",
+     *     summary="Ajout d'un ressource",
+     *     @OA\Response(response="201", description="Ressource créé avec succes"),
+     *     @OA\Response(response="422", description="erreur")
+     * )
      */
     public function store(Request $request, Ressource $ressource)
     {
@@ -92,7 +110,12 @@ class RessourceController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * 
+     * @OA\Get(
+     *     path="/api/ressourceShow{id}",
+     *     summary="Afficher un ressource",
+     *     @OA\Response(response="200", description="succes"),
+     * )
      */
     public function show($id, Ressource $ressource)
     {
@@ -115,7 +138,13 @@ class RessourceController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * 
+     * @OA\Patch(
+     *     path="/api/ressourceUpdate{id}",
+     *     summary="Modification d'un ressource",
+     *     @OA\Response(response="201", description="Ressource modifié avec succes"),
+     *     @OA\Response(response="422", description="erreur")
+     * )
      */
     public function update(Request $request, $id, Ressource $ressource)
     {
@@ -146,8 +175,13 @@ class RessourceController extends Controller
     
     }
 
-        /*
-     * Remove the specified resource from storage.
+    /**
+     * 
+     * @OA\Delete(
+     *     path="/api/ressourceDelete{id}",
+     *     summary="Suppression d'un ressource",
+     *     @OA\Response(response="200", description="Ressource supprimé avec succes"),
+     * )
      */
     public function destroy(Request $request, Ressource $ressource)
     {

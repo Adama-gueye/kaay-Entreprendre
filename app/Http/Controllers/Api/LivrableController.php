@@ -11,11 +11,24 @@ use App\Traits\ReturnJsonResponseTrait;
 use App\Http\Requests\LivrableFormRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
+/**
+ * @OA\Info(
+ *     description="EndPoints pour livrable",
+ *     version="1.0.0",
+ *     title="Swagger Petstore"
+ * )
+ * 
+ */
 class LivrableController extends Controller
 {
     use ReturnJsonResponseTrait;
-    /**
-     * Display a listing of the resource.
+
+     /**
+     * @OA\Get(
+     *     path="/api/livrable",
+     *     summary="Retourne tout les livrables",
+     *     @OA\Response(response="200", description="Successful operation")
+     * )
      */
     public function index(Livrable $livrable)
     {
@@ -32,7 +45,13 @@ class LivrableController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * 
+     * @OA\Post(
+     *     path="api/livrable/create",
+     *     summary="Ajout d'un livrable",
+     *     @OA\Response(response="201", description="Livrable créé avec succes"),
+     *     @OA\Response(response="422", description="livrable introuvable")
+     * )
      */
     public function store(LivrableFormRequest $request, Livrable $livrable)
     {
@@ -42,11 +61,17 @@ class LivrableController extends Controller
         if ($existsResource === null) {
             return $this->returnJsonResponse(404, 'La ressource de ce livrable est introuvable', $request->all());
         }
-        return $this->returnJsonResponse(200, 'Livrable ajouté avec succes', $request->validated(), Livrable::create($request->all()));
+        return $this->returnJsonResponse(201, 'Livrable ajouté avec succes', $request->validated(), Livrable::create($request->all()));
     }
 
     /**
-     * Display the specified resource.
+     * 
+     * @OA\Get(
+     *     path="/api/livrable{id}",
+     *     summary="Afficher un livrable",
+     *     @OA\Response(response="200", description="succes"),
+     *     @OA\Response(response="400", description="erreur"),
+     * )
      */
     public function show(Request $request)
     {
@@ -70,7 +95,13 @@ class LivrableController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * 
+     * @OA\Patch(
+     *     path="/ap/livrable/{id}",
+     *     summary="Modification d'un guide",
+     *     @OA\Response(response="201", description="Livrable modifié avec succes"),
+     *     @OA\Response(response="422", description="Erreur")
+     * )
      */
     // public function update(LivrableFormRequest $request)
     // {
@@ -93,8 +124,14 @@ class LivrableController extends Controller
     //     }
     // }
 
-    /**
-     * Remove the specified resource from storage.
+     /**
+     * 
+     * @OA\Delete(
+     *     path="/api/livrable/{id}",
+     *     summary="Suppression d'un livrable",
+     *     @OA\Response(response="200", description="Livrable supprimé avec succes"),
+     *     @OA\Response(response="422", description="erreur"),
+     * )
      */
     public function destroy(Request $request)
     {

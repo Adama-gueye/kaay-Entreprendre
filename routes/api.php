@@ -15,6 +15,15 @@ use App\Http\Controllers\APi\PartageExperienceController;
 use App\Http\Controllers\Api\DemandeAccompagnementController;
 use App\Models\Commentaire;
 
+
+
+
+
+
+
+
+use App\Http\Controllers\OpenaiController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -57,9 +66,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::patch('/ressourceUpdate{id}', [RessourceController::class, 'update']);
     Route::get('/ressourceShow{id}', [RessourceController::class, 'show']);
 
-    //acommpagnement
-    Route::get('/accompany', [DemandeAccompagnementController::class, 'index']);
-    Route::get('/accompany/{id}', [DemandeAccompagnementController::class, 'show']);
+    
+//acommpagnement
+    Route::post('/accompany/create', [DemandeAccompagnementController::class, 'store']);
+    Route::delete('/post/{demandeAccompagnement}', [DemandeAccompagnementController::class, 'destroy']);
     Route::post('/accompany/create', [DemandeAccompagnementController::class, 'store']);
     Route::delete('/accompany/{id}', [DemandeAccompagnementController::class, 'destroy']);
 

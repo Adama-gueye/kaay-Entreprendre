@@ -1,0 +1,39 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Swagger Petstore",
+        "description": "Endpoind commentaire",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/user": {
+            "get": {
+                "summary": "Retourne afficher la liste  des commentaires",
+                "operationId": "c0c83545313eec91e7c1c57d10ffc874",
+                "responses": {
+                    "201": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Retourne cree des commentaires",
+                "operationId": "dde78d536248a1c9b7d907e6f9177780",
+                "responses": {
+                    "201": {
+                        "description": "Successful operation"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Retourne suprimmer des commentaires",
+                "operationId": "07e23e228ab1671bdaa11c8d6074ab1b",
+                "responses": {
+                    "201": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        }
+    }
+}
