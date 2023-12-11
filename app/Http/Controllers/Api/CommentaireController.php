@@ -43,7 +43,6 @@ class CommentaireController extends Controller
     {
         return [
             'commentaire' => ['required', 'string'],
-
         ];
     }
     public function messages()

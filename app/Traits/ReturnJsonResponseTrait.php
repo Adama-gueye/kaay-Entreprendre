@@ -41,11 +41,11 @@ trait ReturnJsonResponseTrait
     
 
 
-    public function returnNotFoundJsonResponse($message, $statusCode = 404)
+    public function returnNotFoundJsonResponse($message =null, $statusCode = 404)
     {
-        // $result = $model::find($id);
-        // if(!$result || ! $result->exists )
-        // {
+        if($message == null) {
+            $message = 'Enregistrement';
+        }
         return response()->json([
             'message' => ucfirst($message) . ' non trouvé',
             'statusCode' => $statusCode,

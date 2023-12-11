@@ -6,9 +6,16 @@ namespace App\Providers;
 
 // use App\Models\DemandeAccompagnement;
 use App\Models\User;
+use App\Models\Guide;
+use App\Models\Ressource;
+use App\Models\Commentaire;
 use App\Policies\GuidePolicy;
+use App\Policies\RessourcePolicy;
+use App\Policies\CommentairePolicy;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Facades\Gate;
+use App\Models\DemandeAccompagnement;
+use App\Policies\DemandeAccompagnementPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -19,9 +26,10 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        Commentaire::class => CommentairePolicy::class,
-        DemandeAccompagnement::class => DemandeAccompagnementPolicy::class,
         Guide::class => GuidePolicy::class,
+        Ressource::class => RessourcePolicy::class,
+        DemandeAccompagnement::class => DemandeAccompagnementPolicy::class,
+        Commentaire::class => CommentairePolicy::class,
     ];
 
    

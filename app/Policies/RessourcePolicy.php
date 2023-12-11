@@ -13,7 +13,7 @@ class RessourcePolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -21,19 +21,15 @@ class RessourcePolicy
      */
     public function view(User $user, Ressource $ressource): bool
     {
-        return $user->role === 'admin'
-                ? Response::allow()
-                : Response::deny('Vous n\'avez pas accés sur cette page.');
+        return true;
     }
 
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function store(User $user): bool
     {
-        return $user->role === 'admin'
-                ? Response::allow()
-                : Response::deny('Vous n\'avez pas accés sur cette page.');
+        return $user->role === 'admin';
     }
 
     /**
@@ -41,9 +37,7 @@ class RessourcePolicy
      */
     public function update(User $user, Ressource $ressource): bool
     {
-        return $user->role === 'admin'
-                ? Response::allow()
-                : Response::deny('Vous n\'avez pas accés sur cette page.');
+        return $user->role === 'admin';
     }
 
     /**
@@ -51,24 +45,8 @@ class RessourcePolicy
      */
     public function delete(User $user, Ressource $ressource): bool
     {
-        return $user->role === 'admin'
-                ? Response::allow()
-                : Response::deny('Vous n\'avez pas accés sur cette page.');
+        return $user->role === 'admin';
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Ressource $ressource): bool
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Ressource $ressource): bool
-    {
-        //
-    }
+   
 }

@@ -21,7 +21,7 @@ class GuideController extends Controller
         $this->authorize('view', $guide);
         try {
             $guides = Guide::all();
-            return response()->json(compact('guide'), 200);
+            return response()->json(compact('guides'), 200);
         } catch (Exception $error) {
             return response()->json(['message' => $error->getMessage()]);
         }

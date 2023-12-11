@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Api;
 
+use Exception;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\DemandeAccompagnement;
 use App\Traits\ReturnJsonResponseTrait;
 use App\Http\Requests\DemandeAccomagnementFromRequest;
-use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpFoundation\Response;
 
 class DemandeAccompagnementController extends Controller
 {
@@ -18,28 +20,11 @@ class DemandeAccompagnementController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request, DemandeAccompagnement $demandeAccompagnement)
     {
-        $this->authorize('store', DemandeAccompagnement::class);
+        $this->authorize('view', $demandeAccompagnement);
         try {
-
-            $query = DemandeAccompagnement::query();
-            $perPage = 1;
-            $page = $request->input('page', 1);
-            $search = $request->input('search');
-            if ($search) {
-                $query->whereRaw("title LIKE '%" . $search . "%'");
-            }
-            $total = $query->count();
-            $result = $query->offset(($page - 1) * $perPage)->limit($perPage)->get();
-
-            return response()->json([
-                'status_code' => 'status_code',
-                'status_message' => 'status_message',
-                'current_page' => $page,
-                'last_page' => ceil($total / $perPage),
-                'items' => $result,
-            ]);
+            return $this->returnJsonResponse(200, 'LISTE DES DEMANDES DACCOMPAGNEMENT ', DemandeAccompagnement::with('user')->paginate(3));
         } catch (Exception $e) {
             return response()->json($e);
         }
@@ -50,31 +35,42 @@ class DemandeAccompagnementController extends Controller
      */
     public function create()
     {
-     
         return 'le formulaire d\'accompagnment ';
-        
-        
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(DemandeAccomagnementFromRequest $request)
-
+    public function store(DemandeAccomagnementFromRequest $request, DemandeAccompagnement $demandeAccompagnement)
     {
-        return $this->returnJsonResponse(200, 'SUPER ! C\'est le debut de ton voyage entreprenarial', $request->validated(), DemandeAccompagnement::create($request->all()));
+
+        try {
+            $this->authorize('store', $demandeAccompagnement);
+            return $this->returnJsonResponse(200, 'SUPER ! Votre accompagnement est enregistré.  C\'est le debut de ton voyage entreprenarial', $request->validated(), DemandeAccompagnement::create($request->all()));
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], Response::HTTP_FORBIDDEN);
+        }
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Request $request, $id)
+    public function show(Request $request)
     {
-        $demandeAccompagnement = DemandeAccompagnement::find($id);
-        if(! $demandeAccompagnement){
-            return $this->returnNotFoundJsonResponse('Demande D\'accompagnement' );
+        try {
+            $demandeAccompagnement = DemandeAccompagnement::findOrFail($request->id);
+            $this->authorize('view', $demandeAccompagnement);
+            if (!$demandeAccompagnement) {
+                return $this->returnNotFoundJsonResponse('Demande D\'accompagnement');
+            }
+            return $this->returnJsonResponse(200, 'voir plus', $demandeAccompagnement);
+        } catch (ModelNotFoundException $error) {
+            return response()->json(['message' => $error->getMessage()], 404);
+        } catch (Exception $error) {
+            return response()->json(['message' => $error->getMessage()], 403);
         }
-        return $this->returnJsonResponse(200, 'voir plus', $demandeAccompagnement );
     }
 
     /**
@@ -83,17 +79,17 @@ class DemandeAccompagnementController extends Controller
     public function destroy(Request $request)
     {
         try {
-            $demandeAccompagnement = DemandeAccompagnement::find($request->id);
+            $demandeAccompagnement = DemandeAccompagnement::findOrFail($request->id);
+            $this->authorize('delete', $demandeAccompagnement);
             if ($demandeAccompagnement == null) {
                 return $this->returnJsonResponse(422, 'Enregistrement introuvable ', $demandeAccompagnement);
             }
-            if ($demandeAccompagnement->user_id !== $demandeAccompagnement->id && $demandeAccompagnement->user->role == 'admin') {
-                return $this->returnJsonResponse(422, 'Vous nest pas lauteur de ce demandeAccompagnement', $demandeAccompagnement, NULL);
-            } else if ($demandeAccompagnement !== null) {
-                return $this->returnJsonResponse(200, 'Le demandeAccompagnement à été bien supprimé ', $demandeAccompagnement, $demandeAccompagnement->delete());
-            }
-        } catch (Exception $e) {
-            return $this->returnJsonResponse(422, 'Enregistrement introuvable ', $e);
+            return $this->returnJsonResponse(200, 'Le demandeAccompagnement à été bien supprimé ', $demandeAccompagnement, $demandeAccompagnement->delete());
+
+        } catch (ModelNotFoundException $error) {
+            return $this->returnNotFoundJsonResponse('Enregistrement');
+        } catch (Exception $error) {
+            return $this->returnAuthorizationJsonResponse(403);
         }
     }
 }

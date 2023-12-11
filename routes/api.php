@@ -52,7 +52,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     //ressource
     Route::get('/ressourceIndex', [RessourceController::class, 'index']);
-    Route::post('c', [RessourceController::class, 'store']);
+    Route::post('ressourceStore{id}', [RessourceController::class, 'store']);
     Route::delete('/ressourceDelete{id}', [RessourceController::class, 'destroy']);
     Route::patch('/ressourceUpdate{id}', [RessourceController::class, 'update']);
     Route::get('/ressourceShow{id}', [RessourceController::class, 'show']);
@@ -67,7 +67,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/livrable/index', [LivrableController::class, 'index']);
     Route::get('/livrable/show/{id}', [LivrableController::class, 'show']);
     Route::post('/livrable/store/{ressourceId}', [LivrableController::class, 'store']);
-    Route::delete('/livrable/{id}', [LivrableController::class, 'delete']);
+    Route::delete('/livrable/{id}', [LivrableController::class, 'destroy']);
 
     //partege Expérience
     Route::get('/experienceIndex', [PartageExperienceController::class, 'index']);

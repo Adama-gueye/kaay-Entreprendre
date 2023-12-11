@@ -4,11 +4,12 @@ namespace App\Http\Controllers\Api;
 
 use Exception;
 use App\Models\Livrable;
+use App\Models\Ressource;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Traits\ReturnJsonResponseTrait;
 use App\Http\Requests\LivrableFormRequest;
-use App\Models\Ressource;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class LivrableController extends Controller
 {
@@ -16,13 +17,10 @@ class LivrableController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Livrable $livrable)
     {
-        try {
-            return $this->returnJsonResponse(200, 'LISTE DES LIVRABLES, LE USER AYANT LIVRE, SUR QUEL RESSOURCE IL A LIVRE ', Livrable::with('ressource', 'user')->get() );
-        } catch (Exception $e) {
-            return $this->returnJsonResponse(500, 'LE SERVEUR EST HORS LIGNE CONACTER LADMINISTRATEUR', $e);
-        }
+        $this->authorize('viewAny', $livrable);
+        return $this->returnJsonResponse(200, 'LISTE DES LIVRABLES, LE USER AYANT LIVRE, SUR QUEL RESSOURCE IL A LIVRE ', Livrable::with('ressource', 'user')->paginate(8));
     }
 
     /**
@@ -36,13 +34,13 @@ class LivrableController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(LivrableFormRequest $request, $ressource_id)
+    public function store(LivrableFormRequest $request, Livrable $livrable)
     {
-       
-        $existsResource = Ressource::find($ressource_id);
-        if($existsResource === null )
-        {
-            return $this->returnJsonResponse(404, 'La ressource de ce livrable est introuvable', $request->all() );
+        $this->authorize('store', $livrable);
+        $existsResource = Ressource::find($request->ressourceId);
+
+        if ($existsResource === null) {
+            return $this->returnJsonResponse(404, 'La ressource de ce livrable est introuvable', $request->all());
         }
         return $this->returnJsonResponse(200, 'Livrable ajouté avec succes', $request->validated(), Livrable::create($request->all()));
     }
@@ -52,11 +50,14 @@ class LivrableController extends Controller
      */
     public function show(Request $request)
     {
-        $livrable = Livrable::find( $request->id);
-        if($livrable != null){
+        $livrable = Livrable::find($request->id);
+        $this->authorize('view', $livrable);
+        $livrable = Livrable::find($request->id);
+
+        if ($livrable != null) {
             return $this->returnJsonResponse(200, 'Le livrable sélectionné est : ', $livrable->load('ressource', 'user'));
         } else {
-            return $this->returnJsonResponse(404, 'Le livrable sélectionné introuvable : ', $livrable);       
+            return $this->returnJsonResponse(404, 'Le livrable sélectionné introuvable : ', $livrable);
         }
     }
 
@@ -65,24 +66,32 @@ class LivrableController extends Controller
      */
     public function edit(Livrable $livrable)
     {
-      return 'le formulaire pour editer le livrable';
+        return 'le formulaire pour editer le livrable';
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(LivrableFormRequest $request)
-    {
-            $livrable = Livrable::find($request->id);
-            if (! $livrable-> exists) {
-                return $this->returnJsonResponse(404, 'Enregistrement introuvable ', $livrable);
-            }
-            if ($livrable->user_id !== $livrable->id && $livrable->user->role == 'admin') {
-                return $this->returnJsonResponse( 401, 'Vous nest pas lauteur de ce livrable', $livrable, NULL);
-            } else if ($livrable->exists) {
-                return $this->returnJsonResponse(200, 'Le livrable à été mis à jour ', $livrable, $livrable->updated($request -> validated()));
-            }
-    }
+    // public function update(LivrableFormRequest $request)
+    // {
+    //     try {
+    //         $livrable = Livrable::findOrFail($request->ressourceId);
+    //         $this->authorize('update', $livrable);
+
+    //         if (!$livrable->exists) {
+    //             return $this->returnJsonResponse(404, 'Enregistrement introuvable ', $livrable);
+    //         }
+    //         if ($livrable->user_id !== $livrable->id && $livrable->user->role == 'admin') {
+    //             return $this->returnJsonResponse(401, 'Vous nest pas lauteur de ce livrable', $livrable, NULL);
+    //         } else if ($livrable->exists) {
+    //             return $this->returnJsonResponse(200, 'Le livrable à été mis à jour ', $livrable, $livrable->updated($request->validated()));
+    //         }
+    //     } catch (ModelNotFoundException $error) {
+    //         return response()->json(['message' => $error->getMessage()], 404);
+    //     } catch (Exception $error) {
+    //         return response()->json(['message' => $error->getMessage()], 403);
+    //     }
+    // }
 
     /**
      * Remove the specified resource from storage.
@@ -90,17 +99,19 @@ class LivrableController extends Controller
     public function destroy(Request $request)
     {
         try {
-            $livrable = Livrable::find($request->id);
+            $livrable = Livrable::findOrFail($request->id);
+            $this->authorize('delete', $livrable);
+
             if ($livrable == null) {
-                return $this->returnJsonResponse( 401, 'Enregistrement introuvable ', $livrable);
+                return $this->returnJsonResponse(401, 'Enregistrement introuvable ', $livrable);
             }
-            if ($livrable->user_id !== $livrable->id && $livrable->user->role == 'admin') {
-                return $this->returnJsonResponse( 401, 'Vous nest pas lauteur de ce livrable', $livrable, NULL);
-            } else if ($livrable !== null) {
-                return $this->returnJsonResponse(200, 'Le livrable à été bien supprimé ', $livrable, $livrable->delete());
-            }
-        } catch (Exception $e) {
-            return $this->returnJsonResponse( 404, 'SERVEUR INTROUVABLE ', $e);
+            
+            return $this->returnJsonResponse(200, 'Le livrable à été bien supprimé ', $livrable, $livrable->delete() );
+        
+        } catch (ModelNotFoundException $error) {
+            return $this->returnNotFoundJsonResponse('Enregistrement');
+        } catch (Exception $error) {
+            return $this->returnAuthorizationJsonResponse(403);
         }
     }
 }

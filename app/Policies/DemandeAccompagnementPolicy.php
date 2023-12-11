@@ -13,7 +13,7 @@ class DemandeAccompagnementPolicy
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->role ===  'admin' ;
     }
 
     /**
@@ -22,17 +22,14 @@ class DemandeAccompagnementPolicy
     public function view(User $user, DemandeAccompagnement $demandeAccompagnement): bool
     {
         return true;
-    }
 
+    }
     /**
      * Determine whether the user can create models.
      */
-    public function store (User $user):bool
+    public function store(User $user): bool
     {
-          return $user->role === 'novice' ;
-        // return $user->role ===  'novice'
-        // ? Response::allow()
-        // : Response::deny('Vous n\'etes pas autorise a faire cette action.');
+        return $user->role === 'novice';
     }
 
     /**
@@ -40,7 +37,7 @@ class DemandeAccompagnementPolicy
      */
     public function update(User $user, DemandeAccompagnement $demandeAccompagnement): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -48,32 +45,7 @@ class DemandeAccompagnementPolicy
      */
     public function delete(User $user, DemandeAccompagnement $demandeAccompagnement): bool
     {
-        {
-            return $user->role ===  'admin'
-            ? Response::allow()
-            : Response::deny('Vous n\'etes pas autorise a faire cette action.');
-            return true;
-        }
+        return $user->role ===  'admin' || $demandeAccompagnement->user_id === $user->id;
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, DemandeAccompagnement $demandeAccompagnement): bool
-    {
-        {
-            return $user->role ===  'admin'
-            ? Response::allow()
-            : Response::deny('Vous n\'etes pas autorise a faire cette action.');
-            return true;
-        }
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, DemandeAccompagnement $demandeAccompagnement): bool
-    {
-        return true;
-    }
 }

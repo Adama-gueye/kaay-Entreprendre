@@ -20,9 +20,8 @@ class PartageExperienceController extends Controller
     use ReturnJsonResponseTrait;
 
     public function index()
-    {
-        $partageExperience = PartageExperience::all();
-        return $this->returnJsonResponse(200, 'Liste expériences partagé', $partageExperience);
+    { 
+        return $this->returnJsonResponse(200, 'Liste des expériences partagé', PartageExperience::all() );
     }
 
     public function creation(CreatePostRequest $request)

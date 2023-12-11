@@ -1,23 +1,33 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-use App\Http\Controllers\Controller;
+
+use Exception;
 
 use App\Models\Guide;
 use App\Models\Ressource;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
+
 
 class RessourceController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Ressource $ressource)
     {
-        $ressources = Ressource::all();
-        return response()->json(compact('ressources'), 200);
+        $this->authorize('viewAny', $ressource);
+        try {
+            $ressources = Ressource::all();
+            return response()->json(compact('ressources'), 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 404);
+        }
     }
 
     /**
@@ -30,7 +40,7 @@ class RessourceController extends Controller
             'titre' => 'required',
             'consigne' => 'required',
             'objectif' => 'required',
-            'etat' => 'required',
+           
         ];
     }
     public function messages()
@@ -39,14 +49,13 @@ class RessourceController extends Controller
             'titre.required' => 'Desolé! le champ libelle est Obligatoire',
             'consigne.required' => 'Desolé! le champ consigne est Obligatoire',
             'objectif.required' => 'Desolé! le champ objectif est Obligatoire',
-            'etat.required' => 'Desolé! le champ etat est Obligatoire',
         ];
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Ressource $ressource)
     {
         //
     }
@@ -54,33 +63,47 @@ class RessourceController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Ressource $ressource)
     {
-       $user = Auth::user();
-       $validator = Validator::make($request->all(), $this->rules());
+        $this->authorize('store', $ressource);
+        try {
+            Guide::findOrFail($request->id);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+            $validator = Validator::make($request->all(), $this->rules());
+            if ($validator->fails()) {
+                return response()->json(['errors' => $validator->errors()], 422);
+            }
+    
+            $ressource = new Ressource();
+            $ressource->titre = $request->titre;
+            $ressource->objectif = $request->objectif;
+            $ressource->consigne = $request->consigne;
+            $ressource->etat = 'activer';
+            $ressource->guide_id = $request->id;
+            $ressource->save();
+    
+            return response()->json(['message' => 'Ressource créé avec succès'], 201);
+            
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 404);
         }
 
-        $ressource = new Ressource();
-        $ressource->titre = $request->titre;
-        $ressource->objectif = $request->objectif;
-        $ressource->consigne = $request->consigne;
-        $ressource->etat = $request->etat;
-        $ressource->guide_id = 1;
-        $ressource->save();
-
-        return response()->json(['message' => 'Ressource créé avec succès'], 201);
+      
     }
 
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show($id, Ressource $ressource)
     {
-        $ressource = Ressource::find($id);
-        return response()->json(compact('ressource'),200);
+        try {
+            $this->authorize('view', $ressource);
+            $ressource = Ressource::find($id);
+        return response()->json(compact('ressource'), 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 404);
+        }
+        
     }
 
     /**
@@ -94,32 +117,49 @@ class RessourceController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, Ressource $ressource)
     {
-        $user = Auth::user();
-       $validator = Validator::make($request->all(), $this->rules());
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+        try {
+            $this->authorize('update', $ressource);
+            $user = Auth::user();
+            $validator = Validator::make($request->all(), $this->rules());
+    
+            if ($validator->fails()) {
+                return response()->json(['errors' => $validator->errors()], 422);
+            }
+    
+            $ressource = Ressource::find($id);
+            $ressource->titre = $request->titre;
+            $ressource->objectif = $request->objectif;
+            $ressource->consigne = $request->consigne;
+            $ressource->etat = $request->etat;
+            $ressource->guide_id = 1;
+            $ressource->save();
+    
+            return response()->json(['message' => 'Ressource modifié avec succès'], 201);
+        
+        } catch (ModelNotFoundException $error ) {
+            return response()->json(['message' => $error->getMessage()], 403);
+        } catch (Exception $error) {
+            return response()->json(['message' => $error->getMessage()], 404);
         }
-
-        $ressource = Ressource::find($id);
-        $ressource->titre = $request->titre;
-        $ressource->objectif = $request->objectif;
-        $ressource->consigne = $request->consigne;
-        $ressource->etat = $request->etat;
-        $ressource->guide_id = 1;
-        $ressource->save();
-
-        return response()->json(['message' => 'Ressource modifié avec succès'], 201);
+    
     }
 
-    /**
+        /*
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(Request $request, Ressource $ressource)
     {
-        Ressource::find($id)->delete();
-        return response()->json(['message' => 'Ressource supprimé avec succès'], 200);
+      
+        try {
+            $this->authorize('delete', $ressource);
+            Ressource::findOrFail($request->id)->delete();
+            return response()->json(['message' => 'Ressource supprimé avec succès'], 200);
+        } catch (ModelNotFoundException $error ) {
+            return response()->json(['message' => $error->getMessage()], 404);
+        } catch (Exception $error) {
+            return response()->json(['message' => $error->getMessage()], 403);
+        }
     }
 }

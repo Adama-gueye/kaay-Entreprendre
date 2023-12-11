@@ -13,7 +13,7 @@ class LivrablePolicy
      */
     public function viewAny(User $user): bool
     {
-        
+        return $user->role ===  'admin' ; 
     }
 
     /**
@@ -21,19 +21,15 @@ class LivrablePolicy
      */
     public function view(User $user, Livrable $livrable): bool
     {
-        return $user->role === 'admin'
-                ? Response::allow()
-                : Response::deny('Vous n\'avez pas accés sur cette page.');
+        return $user->role === 'admin' || $livrable->user_id = $user->id ;
     }
 
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function store(User $user): bool
     {
-        return $user->role === 'novice'
-                ? Response::allow()
-                : Response::deny('Vous n\'avez pas accés sur cette page.');
+        return $user->role === 'novice';
     }
 
     /**
@@ -41,9 +37,7 @@ class LivrablePolicy
      */
     public function update(User $user, Livrable $livrable): bool
     {
-        return $user->role === 'admin'
-                ? Response::allow()
-                : Response::deny('Vous n\'avez pas accés sur cette page.');
+        return false;
     }
 
     /**
@@ -51,24 +45,7 @@ class LivrablePolicy
      */
     public function delete(User $user, Livrable $livrable): bool
     {
-        return $user->role === 'admin'
-                ? Response::allow()
-                : Response::deny('Vous n\'avez pas accés sur cette page.');
+        return $user->role === 'admin' || $user->id === $livrable->user_id;
     }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Livrable $livrable): bool
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Livrable $livrable): bool
-    {
-        //
-    }
+   
 }
