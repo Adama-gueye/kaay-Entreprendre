@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\APi\PartageExperienceController;
 use App\Http\Controllers\APi\ReponseController;
+use App\Http\Controllers\OpenaiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,6 +33,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('login',[UserController::class,'loginUser']);
 Route::post('/register',[UserController::class,'createCompte'])->name('create');
+Route::get('/test',[OpenaiController::class,'index']);
 //partage d'experiance
 
 

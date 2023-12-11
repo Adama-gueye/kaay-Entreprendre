@@ -23,7 +23,6 @@ use OpenApi\Annotations as OA;
  */
 class UserController extends Controller
 {
-    
 
     /**
      * @OA\Get(

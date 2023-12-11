@@ -22,7 +22,7 @@ class ReponseController extends Controller
      */
     public function index()
     {
-        //
+        
     }
 
     
@@ -31,7 +31,7 @@ class ReponseController extends Controller
 
   /**
      * @OA\Post(
-     *     path="/api/user",
+     *     path="/api/reponse",
      *     summary="Retourne cree une reponse",
      *     @OA\Response(response="201", description="Successful operation")
      *    
@@ -60,7 +60,7 @@ class ReponseController extends Controller
      */
     /**
      * @OA\delete(
-     *     path="/api/user",
+     *     path="/api/reponse/sup{id}",
      *     summary="Retourne suprimer une reponse",
      *     @OA\Response(response="201", description="Successful operation")
      *    
