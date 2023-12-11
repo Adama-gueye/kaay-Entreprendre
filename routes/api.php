@@ -42,7 +42,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('login', [UserController::class, 'loginUser']);
 Route::post('/register', [UserController::class, 'createCompte']);
-Route::get('/goLogin', [UserController::class, 'goLogin']);
+Route::get('/goLogin', [UserController::class, function(){
+    return response()->json(['message'=>'Veuillez vous connecter'],404);
+}]);
 //partage d'experiance
 
 

@@ -15,12 +15,6 @@ use Illuminate\Support\Facades\Auth;
 use App\Traits\ReturnJsonResponseTrait;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Validator;
-
-
-
-
-
-
 use OpenApi\Annotations as OA;
 
 class CommentaireController extends Controller
@@ -29,8 +23,6 @@ class CommentaireController extends Controller
     /**
      * Display a listing of the resource.
      */
-
-
     /**
      * @OA\Info(
      *     description="Endpoind commentaire",

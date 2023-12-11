@@ -33,7 +33,8 @@ class UserController extends Controller
      */
     public function listeUtilisteurs() {
         $user = Auth::user();
-        if($user->role_id == 1){
+            
+        if($user->role == 'admin'){
             $novices = User::whereHas('role', function ($query) {
                 $query->where('nom', 'novice');
             })->get();
