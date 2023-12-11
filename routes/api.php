@@ -9,20 +9,10 @@ use Egulias\EmailValidator\Parser\Comment;
 use App\Http\Controllers\Api\DemandeAccompagnementController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-<<<<<<< HEAD
-use App\Http\Controllers\UserController;
 
-use App\Http\Controllers\GuideController;
-use Egulias\EmailValidator\Parser\Comment;
-use App\Http\Controllers\CommentaireController;
-use App\Http\Controllers\LivrableController;
-use App\Http\Controllers\PartageExperienceController;
-use App\Http\Controllers\ReponseController;
-=======
 use App\Http\Controllers\APi\PartageExperienceController;
 use App\Http\Controllers\APi\ReponseController;
 use App\Http\Controllers\OpenaiController;
->>>>>>> develop
 
 /*
 |--------------------------------------------------------------------------
@@ -61,18 +51,6 @@ Route::group(['middleware' => 'auth:sanctum'],function(){
     Route::get('/guideIndex',[GuideController::class,'index']);
     Route::delete('/guideDelete{id}',[GuideController::class,'destroy']);
     Route::post('/experience',[PartageExperienceController::class,'create']);
-<<<<<<< HEAD
-    
-Route::put('/experience/update{id}',[PartageExperienceController::class,'update']);
-Route::delete('/experience/suprimmer{id}',[PartageExperienceController::class,'destroy']);
-Route::post('/commentaire',[CommentaireController::class,'create']);
-Route::delete('/commentaire/sup{id}',[CommentaireController::class,'destroy']);
-Route::post('/reponse',[ReponseController::class,'create']);
-Route::delete('/reponse/sup{id}',[ReponseController::class,'destroy']);
-Route::delete('/livrablle/sup{id}',[LivrableController::class,'destroy']);
-
-=======
->>>>>>> develop
 
 //partege Expérience
     Route::put('/experience/update{id}',[PartageExperienceController::class,'update']);
