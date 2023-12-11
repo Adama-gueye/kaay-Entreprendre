@@ -1,0 +1,71 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Swagger Petstore",
+        "description": "EndPoints pour ressource",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/ressourceIndex": {
+            "get": {
+                "summary": "Retourne tout les ressources",
+                "operationId": "4e3926d05aec5a6c4dd22831a4c2a225",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/apiressourceStore{id}": {
+            "post": {
+                "summary": "Ajout d'un ressource",
+                "operationId": "ad636cb48775e90ff79d9c7eddbb3ef4",
+                "responses": {
+                    "201": {
+                        "description": "Ressource créé avec succes"
+                    },
+                    "422": {
+                        "description": "erreur"
+                    }
+                }
+            }
+        },
+        "/api/ressourceShow{id}": {
+            "get": {
+                "summary": "Afficher un ressource",
+                "operationId": "5257cd7a90c76f0ac9f883da0b6959af",
+                "responses": {
+                    "200": {
+                        "description": "succes"
+                    }
+                }
+            }
+        },
+        "/api/ressourceUpdate{id}": {
+            "patch": {
+                "summary": "Modification d'un ressource",
+                "operationId": "6896ea6aa575da04087f57ff93c26ffe",
+                "responses": {
+                    "201": {
+                        "description": "Ressource modifié avec succes"
+                    },
+                    "422": {
+                        "description": "erreur"
+                    }
+                }
+            }
+        },
+        "/api/ressourceDelete{id}": {
+            "delete": {
+                "summary": "Suppression d'un ressource",
+                "operationId": "b549210a2d02f2552fa5fc8e74803974",
+                "responses": {
+                    "200": {
+                        "description": "Ressource supprimé avec succes"
+                    }
+                }
+            }
+        }
+    }
+}

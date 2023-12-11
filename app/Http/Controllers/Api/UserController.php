@@ -26,7 +26,7 @@ class UserController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/user",
+     *     path="/api/users",
      *     summary="Retourne liste des utilisateurs",
      *     @OA\Response(response="200", description="Successful operation")
      * )
@@ -80,6 +80,15 @@ class UserController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     */
+    /**
+     * 
+     * @OA\Post(
+     *     path="/api/user",
+     *     summary="Connexion entre l'utilisateur",
+     *     @OA\Response(response="201", description="connexion succes"),
+     *     @OA\Response(response="401", description="Identifiant incorect")
+     * )
      */
     public function userDetails(): Response
     {

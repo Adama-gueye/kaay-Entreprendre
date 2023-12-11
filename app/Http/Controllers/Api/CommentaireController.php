@@ -19,11 +19,11 @@ use OpenApi\Annotations as OA;  // Make sure this line is correct
 
 /**
  * @OA\Info(
- *     description="Endpoint commentaire",
+ *     description="EndPoints pour demande accompagnement",
  *     version="1.0.0",
  *     title="Swagger Petstore"
  * )
- * @OA\PathItem()
+ * 
  */
 class CommentaireController extends Controller
 {

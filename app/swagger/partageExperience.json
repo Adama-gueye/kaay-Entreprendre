@@ -6,40 +6,63 @@
         "version": "1.0.0"
     },
     "paths": {
-        "/api/user": {
+        "/api/experienceIndex": {
             "get": {
-                "summary": "Retourne lister les partage d'experiance",
-                "operationId": "387d42214db77ea3b8979c36005602e6",
+                "summary": "Afficher la liste des partages d'expérience",
+                "operationId": "5c026903cdd50dc252f558e119475dd8",
                 "responses": {
                     "200": {
-                        "description": "Successful operation"
+                        "description": "succes"
                     }
                 }
-            },
-            "put": {
-                "summary": "Retourne modifier une partage d'experiance",
-                "operationId": "dae3333a1ffab6f4a4aaf1bb4d2fcc98",
-                "responses": {
-                    "201": {
-                        "description": "Successful operation"
-                    }
-                }
-            },
+            }
+        },
+        "/api/experienceStore": {
             "post": {
-                "summary": "Retourne cree une partage d'experiance",
-                "operationId": "a647d9db5795b3a871dec09bf389836e",
+                "summary": "Enregistrer un  partage d'expérience",
+                "operationId": "72a67a92a9d1a888fc21b7d8376e3b63",
                 "responses": {
-                    "201": {
-                        "description": "Successful operation"
+                    "200": {
+                        "description": "succes"
                     }
                 }
-            },
-            "delete": {
-                "summary": "Retourne suprimer une partage d'experiance",
-                "operationId": "1791e9eba82718d4db3de971b9e665f5",
+            }
+        },
+        "/api/experience/update{id}": {
+            "put": {
+                "summary": "Mettre à jour un partages d'expérience",
+                "operationId": "a79fccf902937df31d30695a8f4a856d",
                 "responses": {
-                    "201": {
-                        "description": "Successful operation"
+                    "200": {
+                        "description": "succes"
+                    },
+                    "422": {
+                        "description": "Vous nest pas lauteur de ce post"
+                    }
+                }
+            }
+        },
+        "/api/experience/suprimmer{id}": {
+            "delete": {
+                "summary": "Supprimer un partages d'expérience",
+                "operationId": "c4a1b2b30eb8c0ba7007c9f32f6ae739",
+                "responses": {
+                    "200": {
+                        "description": "succes"
+                    }
+                }
+            }
+        },
+        "/api/experience/{id}": {
+            "get": {
+                "summary": "Afficher un partages d'expérience donnée",
+                "operationId": "a4e4b60729c69adbd513bb78f9187254",
+                "responses": {
+                    "200": {
+                        "description": "succes"
+                    },
+                    "404": {
+                        "description": "Enregistrement innexistant"
                     }
                 }
             }

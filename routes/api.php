@@ -49,9 +49,9 @@ Route::get('/goLogin', [UserController::class, function(){
 
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
-    Route::post('logout', [UserController::class, 'logout']);
-    Route::get('user', [UserController::class, 'userDetails']);
-    Route::get('logout', [UserController::class, 'logout']);
+    Route::post('/logout', [UserController::class, 'logout']);
+    Route::get('/user', [UserController::class, 'userDetails']);
+    Route::get('/logout', [UserController::class, 'logout']);
     Route::get('/users', [UserController::class, 'listeUtilisteurs']);
 
     //guide
@@ -74,6 +74,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::delete('/post/{demandeAccompagnement}', [DemandeAccompagnementController::class, 'destroy']);
     Route::post('/accompany/create', [DemandeAccompagnementController::class, 'store']);
     Route::delete('/accompany/{id}', [DemandeAccompagnementController::class, 'destroy']);
+    Route::('/accompany', [DemandeAccompagnementController::class, 'index']);
 
     //livrable
     Route::get('/livrable/index', [LivrableController::class, 'index']);

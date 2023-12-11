@@ -1,0 +1,71 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Swagger Petstore",
+        "description": "EndPoints pour utilisateur",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/users": {
+            "get": {
+                "summary": "Retourne liste des utilisateurs",
+                "operationId": "7627c90eeca5ef8c248259ae080b3107",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "summary": "Connexion entre l'utilisateur",
+                "operationId": "7716aff3e5de668956e4c3802154391b",
+                "responses": {
+                    "201": {
+                        "description": "connexion succes"
+                    },
+                    "401": {
+                        "description": "Identifiant incorect"
+                    }
+                }
+            }
+        },
+        "/api/user": {
+            "post": {
+                "summary": "Connexion entre l'utilisateur",
+                "operationId": "10fcef3eb5a84f87bedf16ab5a49f12e",
+                "responses": {
+                    "201": {
+                        "description": "connexion succes"
+                    },
+                    "401": {
+                        "description": "Identifiant incorect"
+                    }
+                }
+            }
+        },
+        "/api/register": {
+            "post": {
+                "summary": "Création compte d'un utilisareur",
+                "operationId": "2dd89908a1a19ef3401ce29a30bdd67a",
+                "responses": {
+                    "201": {
+                        "description": "compte creer succes"
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "get": {
+                "summary": "Déconnexion utilisareur",
+                "operationId": "b5b0e4026ed3cc40a861d3e9c4b7f0e4",
+                "responses": {
+                    "200": {
+                        "description": "succes"
+                    }
+                }
+            }
+        }
+    }
+}

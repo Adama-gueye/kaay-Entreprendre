@@ -28,6 +28,14 @@ class ReponseController extends Controller
     /**
      * Display a listing of the resource.
      */
+     /**
+     * @OA\get(
+     *     path="/reponse/index",
+     *     summary="Retourne cree une reponse",
+     *     @OA\Response(response="201", description="Successful operation")
+     *    
+     * )
+     */
     public function index()
     {
         return $this->returnJsonResponse(200, 'LISTE DES REPONSES AINSI QUE LUTILISATEUR AYANT REPONDU ', Reponse::with('commentaire', 'user')->get());
@@ -35,7 +43,7 @@ class ReponseController extends Controller
 
   /**
      * @OA\Post(
-     *     path="/api/reponse",
+     *     path="/api/reponse/create{commentaireId}",
      *     summary="Retourne cree une reponse",
      *     @OA\Response(response="201", description="Successful operation")
      *    
@@ -85,7 +93,7 @@ class ReponseController extends Controller
      */
     /**
      * @OA\delete(
-     *     path="/api/reponse/sup{id}",
+     *     path="/api/reponse/{id}",
      *     summary="Retourne suprimer une reponse",
      *     @OA\Response(response="201", description="Successful operation")
      *    
@@ -105,7 +113,7 @@ class ReponseController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/api/user",
+     *     path="/api/reponse/show/{id}",
      *     summary="Retourne la liste des reponse",
      *     @OA\Response(response="200", description="Successful operation")
      *    

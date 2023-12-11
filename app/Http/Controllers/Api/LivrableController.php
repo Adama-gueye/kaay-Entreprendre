@@ -26,11 +26,15 @@ class LivrableController extends Controller
 
      /**
      * @OA\Get(
-     *     path="/api/livrable/index,
+     *     path="/api/livrable/index",
      *     summary="Retourne tout les livrables",
      *     @OA\Response(response="200", description="Successful operation")
      * )
-     */
+   */
+
+
+   
+   
     public function index(Livrable $livrable)
     {
         $this->authorize('viewAny', $livrable);

@@ -77,7 +77,7 @@ class RessourceController extends Controller
     /**
      * 
      * @OA\Post(
-     *     path="/api/ressourceStore",
+     *     path="/apiressourceStore{id}",
      *     summary="Ajout d'un ressource",
      *     @OA\Response(response="201", description="Ressource créé avec succes"),
      *     @OA\Response(response="422", description="erreur")

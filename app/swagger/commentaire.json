@@ -2,32 +2,36 @@
     "openapi": "3.0.0",
     "info": {
         "title": "Swagger Petstore",
-        "description": "Endpoind commentaire",
+        "description": "EndPoints pour demande accompagnement",
         "version": "1.0.0"
     },
     "paths": {
-        "/api/user": {
+        "/api/commentaireIndex": {
             "get": {
-                "summary": "Retourne afficher la liste  des commentaires",
-                "operationId": "c0c83545313eec91e7c1c57d10ffc874",
+                "summary": "Retourne cree des commentaires",
+                "operationId": "c5213f5e75def1ccb2261af3b2001ec1",
                 "responses": {
                     "201": {
                         "description": "Successful operation"
                     }
                 }
-            },
+            }
+        },
+        "/api/commentaireCreate/{partageExperienceId}": {
             "post": {
                 "summary": "Retourne cree des commentaires",
-                "operationId": "dde78d536248a1c9b7d907e6f9177780",
+                "operationId": "d59017b9b64a20c065a456224cc5161c",
                 "responses": {
                     "201": {
                         "description": "Successful operation"
                     }
                 }
-            },
-            "delete": {
+            }
+        },
+        "/api/commentaireShow/{id}": {
+            "get": {
                 "summary": "Retourne suprimmer des commentaires",
-                "operationId": "07e23e228ab1671bdaa11c8d6074ab1b",
+                "operationId": "82aff5b8b20da1a9cf9fdb82821ea2db",
                 "responses": {
                     "201": {
                         "description": "Successful operation"

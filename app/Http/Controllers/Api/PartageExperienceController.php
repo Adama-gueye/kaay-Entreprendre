@@ -45,7 +45,7 @@ class PartageExperienceController extends Controller
 
     /**
      * 
-     * @OA\Get(
+     * @OA\post(
      *     path="/api/experienceStore",
      *     summary="Enregistrer un  partage d'expérience",
      *     @OA\Response(response="200", description="succes"),
@@ -58,7 +58,7 @@ class PartageExperienceController extends Controller
 
     /**
      * 
-     * @OA\Get(
+     * @OA\put(
      *     path="/api/experience/update{id}",
      *     summary="Mettre à jour un partages d'expérience",
      *     @OA\Response(response="200", description="succes"),
@@ -76,7 +76,7 @@ class PartageExperienceController extends Controller
 
     /**
      * 
-     * @OA\Get(
+     * @OA\delete(
      *     path="/api/experience/suprimmer{id}",
      *     summary="Supprimer un partages d'expérience",
      *     @OA\Response(response="200", description="succes"),
@@ -124,7 +124,7 @@ class PartageExperienceController extends Controller
 
   /**
      * 
-     * @OA\Get(
+     * @OA\patch(
      *     path="/api/experience/edit{id}",
      *     summary="Afficher un partages d'expérience donnée",
      *     @OA\Response(response="200", description="succes"),
