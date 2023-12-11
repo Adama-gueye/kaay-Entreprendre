@@ -12,10 +12,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules;
 use OpenApi\Annotations as OA;
 
-
 /**
  * @OA\Info(
- *     description="API kaay entreprendre",
+ *     description="EndPoints pour utilisateur",
  *     version="1.0.0",
  *     title="Swagger Petstore"
  * )
@@ -23,6 +22,9 @@ use OpenApi\Annotations as OA;
  */
 class UserController extends Controller
 {
+    /**
+     * 
+     */
 
     /**
      * @OA\Get(
@@ -132,7 +134,7 @@ class UserController extends Controller
             $file= $request->file('image');
             $filename= date('YmdHi').$file->getClientOriginalName();
             $file-> move(public_path('public/images'), $filename);
-            $bien['image']= $filename;
+            $user['image']= $filename;
         }
         $user->nom = $request->nom;
         $user->prenom = $request->prenom;

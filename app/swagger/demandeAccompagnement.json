@@ -1,0 +1,58 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Swagger Petstore",
+        "description": "EndPoints pour demande accompagnement",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/accompany": {
+            "get": {
+                "summary": "Retourne tout les demandes",
+                "operationId": "7040356171a2b045b45cbef64d4f1f20",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "/api/accompany/create": {
+            "post": {
+                "summary": "Ajout d'un guide",
+                "operationId": "3018aeebb129edfa239e1b46cbcd6e79",
+                "responses": {
+                    "201": {
+                        "description": "Demande Accompagnement créé avec succes"
+                    },
+                    "422": {
+                        "description": "erreur"
+                    }
+                }
+            }
+        },
+        "/api/accompany{id}": {
+            "get": {
+                "summary": "Afficher une demande d'accompagnement",
+                "operationId": "f359d8462240c1601481d22e8453e8ef",
+                "responses": {
+                    "200": {
+                        "description": "succes"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Suppression d'une demande d'accompagnement",
+                "operationId": "387fb04ba41fcb6ed121ff48b12790ad",
+                "responses": {
+                    "200": {
+                        "description": "Demande supprimé avec succes"
+                    },
+                    "422": {
+                        "description": "erreur"
+                    }
+                }
+            }
+        }
+    }
+}
