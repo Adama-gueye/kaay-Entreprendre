@@ -1,3 +1,63 @@
 {
-    "openapi": "3.0.0"
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Swagger Petstore",
+        "description": "EndPoints pour livrable",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/livrable/index": {
+            "get": {
+                "summary": "Retourne tout les livrables",
+                "operationId": "1fce3515649182221d5bdb4d27df9258",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    }
+                }
+            }
+        },
+        "api/livrable/store/{ressourceId}": {
+            "post": {
+                "summary": "Ajout d'un livrable",
+                "operationId": "64dc3458c3705a8f7446633f887c04c2",
+                "responses": {
+                    "201": {
+                        "description": "Livrable créé avec succes"
+                    },
+                    "422": {
+                        "description": "livrable introuvable"
+                    }
+                }
+            }
+        },
+        "/api/livrable/show/{id}": {
+            "get": {
+                "summary": "Afficher un livrable",
+                "operationId": "015982cb5c3a28321856a4ad17abf6be",
+                "responses": {
+                    "200": {
+                        "description": "succes"
+                    },
+                    "400": {
+                        "description": "erreur"
+                    }
+                }
+            }
+        },
+        "/api/livrable/{id}": {
+            "delete": {
+                "summary": "Suppression d'un livrable",
+                "operationId": "ed73de3d2c643ff46d25d41018c9f755",
+                "responses": {
+                    "200": {
+                        "description": "Livrable supprimé avec succes"
+                    },
+                    "422": {
+                        "description": "erreur"
+                    }
+                }
+            }
+        }
+    }
 }
