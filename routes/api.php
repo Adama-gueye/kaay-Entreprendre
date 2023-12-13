@@ -34,6 +34,8 @@ use App\Http\Controllers\OpenaiController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+Route::get('/guideIndex', [GuideController::class, 'index']);
+Route::post('/guideStore', [GuideController::class, 'store']);
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -42,23 +44,25 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('login', [UserController::class, 'loginUser']);
 Route::post('/register', [UserController::class, 'createCompte']);
-Route::get('/goLogin', [UserController::class, function(){
-    return response()->json(['message'=>'Veuillez vous connecter'],404);
+Route::get('/goLogin', [UserController::class, function () {
+    return response()->json(['message' => 'Veuillez vous connecter'], 404);
 }]);
 //partage d'experiance
 
 
-Route::group(['middleware' => 'auth:sanctum'], function () {
+Route::get('/users', [UserController::class, 'listeUtilisteurs']);
+Route::delete('deleteUser/{id}', [UserController::class, 'deleteUser']);
+Route::get('users/edit/{id}', [UserController::class, 'editUser']);
+Route::put('users/update/{id}', [UserController::class, 'updateUser']);
+
+ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('logout', [UserController::class, 'logout']);
     Route::get('user', [UserController::class, 'userDetails']);
     Route::get('logout', [UserController::class, 'logout']);
-    Route::get('/users', [UserController::class, 'listeUtilisteurs']);
-
+    
     //guide
-    Route::get('/guideIndex', [GuideController::class, 'index']);
-    Route::post('/guideStore', [GuideController::class, 'store']);
-    Route::patch('/guideUpdate{id}', [GuideController::class, 'update']);
-    Route::get('/guideShow{id}', [GuideController::class, 'show']);
+    Route::put('/guideUpdate/{id}', [GuideController::class, 'update']);
+    Route::get('/guideShow/{id}', [GuideController::class, 'show']);
     Route::delete('/guideDelete{id}', [GuideController::class, 'destroy']);
 
     //ressource
@@ -68,12 +72,12 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::patch('/ressourceUpdate{id}', [RessourceController::class, 'update']);
     Route::get('/ressourceShow{id}', [RessourceController::class, 'show']);
 
-    
-//acommpagnement
+
+    //acommpagnement
+    Route::get('/accompany', [DemandeAccompagnementController::class, 'index']);
+    Route::get('/accompany/{id}', [DemandeAccompagnementController::class, 'show']);
     Route::post('/accompany/create', [DemandeAccompagnementController::class, 'store']);
     Route::delete('/post/{demandeAccompagnement}', [DemandeAccompagnementController::class, 'destroy']);
-    Route::post('/accompany/create', [DemandeAccompagnementController::class, 'store']);
-    Route::delete('/accompany/{id}', [DemandeAccompagnementController::class, 'destroy']);
 
     //livrable
     Route::get('/livrable/index', [LivrableController::class, 'index']);
@@ -100,11 +104,4 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/reponse/show/{id}', [ReponseController::class, 'show']);
     Route::post('/reponse/create{commentaireId}', [ReponseController::class, 'create']);
     Route::delete('/reponse/{id}', [ReponseController::class, 'destroy']);
-
-
-    // Route::get('/livrable', [LivrableController::class, 'index']);
-    // Route::get('/livrable/{id}', [LivrableController::class, 'show']);
-    // Route::post('/livrable/create', [LivrableController::class, 'store']);
-    // Route::patch('/livrable/{id}', [LivrableController::class, 'update']);
-    // Route::delete('/livrable/{id}', [LivrableController::class, 'destroy']);
-});
+ });

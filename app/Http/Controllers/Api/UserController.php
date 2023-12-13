@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules;
 use OpenApi\Annotations as OA;
+use ReturnJsonResponseTrait;
 
 /**
  * @OA\Info(
@@ -22,8 +23,6 @@ use OpenApi\Annotations as OA;
  */
 class UserController extends Controller
 {
-   
-
     /**
      * @OA\Get(
      *     path="/api/user",
@@ -32,17 +31,20 @@ class UserController extends Controller
      * )
      */
     public function listeUtilisteurs() {
-        $user = Auth::user();
+        $users = User::all();
+        return response()->json(compact('users'),200);
+
+        // $user = Auth::user();
             
-        if($user->role == 'admin'){
-            $novices = User::whereHas('role', function ($query) {
-                $query->where('nom', 'novice');
-            })->get();
-            $experimentes = User::whereHas('role', function ($query) {
-                $query->where('nom', 'experimente');
-            })->get();
-            return response()->json(compact('experimentes','novices'),200);
-        }
+        // if($user->role == 'admin'){
+        //     $novices = User::whereHas('role', function ($query) {
+        //         $query->where('nom', 'novice');
+        //     })->get();
+        //     $experimentes = User::whereHas('role', function ($query) {
+        //         $query->where('nom', 'experimente');
+        //     })->get();
+        //     return response()->json(compact('experimentes','novices'),200);
+        // }
     }
 
     /**
@@ -54,28 +56,31 @@ class UserController extends Controller
      *     @OA\Response(response="401", description="Identifiant incorect")
      * )
      */
-     public function loginUser(Request $request): Response
+     public function loginUser(Request $request)
     {
+        
         $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required',
         ]);
-   
         if($validator->fails()){
-
-            return Response(['message' => $validator->errors()],401);
+            
+            return response()->json(['message' => $validator->errors()],401);
         }
-   
-        if(Auth::attempt($request->all())){
-
-            $user = Auth::user(); 
-    
-            $success =  $user->createToken('MyApp')->plainTextToken; 
         
-            return Response(['token' => $success],200);
+        if(Auth::attempt($request->all())){
+            
+            $user = Auth::user(); 
+            $success =  $user->createToken('MyApp')->plainTextToken; 
+            //dd($success);
+            return Response(['message'=>'connexion reussi', 'token' => $success],200);
+            return response()->json(compact('success'),200);
+            //return $this->returnJsonResponse(200, 'Connexion réussi', $user );
+           
         }
+        
+        // return response()->json(['message' => 'Email ou mot de passe incorrect'], 401);
 
-        return Response(['message' => 'email or password wrong'],401);
     }
 
     /**
@@ -87,10 +92,10 @@ class UserController extends Controller
 
             $user = Auth::user();
 
-            return Response(['data' => $user],200);
+            return  response()->json(compact('users'),200);
         }
 
-        return Response(['data' => 'Unauthorized'],401);
+        return  response()->json('Unauthorized',401);
     }
 
     /**
@@ -107,26 +112,18 @@ class UserController extends Controller
      */
      public function createCompte(Request $request)
     {
-            $request->validate([
-                'nom' => ['required', 'string', 'max:30'],
-                'prenom' => ['required', 'string', 'max:50'],
-                'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-                'password' => ['required', 'string', 'max:50'],
-                'image' => ['required', 'string', 'max:255'],
 
-                
-            ]);
             $validator = Validator::make($request->all(), [
                 'email' => 'required|email',
                 'password' => 'required',
                 'nom' => 'required',
                 'prenom' => 'required',
-                'image' => 'required'
+
             ]);
        
             if($validator->fails()){
     
-                return Response(['message' => $validator->errors()],401);
+                return  response()->json(['message' => $validator->errors()],401);
             }
         $user = new User();
         if($request->file('image')){
@@ -139,7 +136,7 @@ class UserController extends Controller
         $user->prenom = $request->prenom;
         $user->email = $request->email;
         $user->password = $request->password;
-        $user->role_id = $request->role_id;
+        $user->role = $request->role;
         $user->save();
         return response()->json($user,201);
         
@@ -163,7 +160,61 @@ class UserController extends Controller
 
         $user->currentAccessToken()->delete();
         
-        return Response(['data' => 'User Logout successfully.'],200);
+        return  response()->json(['data' => 'User Logout successfully.'],200);
+    }
+
+    public function deleteUser(Request $request): Response
+    {
+        try {
+            $user =  User::findOrFail($request->id);
+            $user->delete();
+            return response()->json(['user' => 'Utilisateur supprimé'],200);
+        } catch (ModelNotFoundException $error) {
+            return response()->json(['message' => $error->getMessage()], 404);
+        } catch (Exception $error) {
+            return response()->json(['message' => $error->getMessage()], 403);
+        }   
+        
+    }
+
+    public function editUser(Request $request) {
+        try {
+            $user = User::FindOrFail($request->id);
+            return response()->json(compact('user'),200);
+        }  catch (ModelNotFoundException $error) {
+            return response()->json(['message' => $error->getMessage()], 404);
+        } catch (Exception $error) {
+            return response()->json(['message' => $error->getMessage()], 403);
+        }  
+        
+    }
+
+    public function updateUser(Request $request) {
+        try {
+            $validator = Validator::make($request->all(), [
+                'email' => 'email',
+                'nom' => 'string',
+                'prenom' => 'string',
+
+            ]);
+       
+            if($validator->fails()){
+    
+                return  response()->json(['message' => $validator->errors()],401);
+            }
+            $user = User::FindOrFail($request->id);
+            $user->update([
+                'nom' => $request->nom, 
+                'prenom' => $request->prenom,
+                'email' => $request->email,
+            ]);
+            return response()->json('Mise a jour réussi',200);
+        }  catch (ModelNotFoundException $error) {
+            return response()->json(['message' => $error->getMessage()], 404);
+        } catch (Exception $error) {
+            return response()->json(['message' => $error->getMessage()], 403);
+        }  
+        
     }
 
     

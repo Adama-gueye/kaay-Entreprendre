@@ -18,12 +18,12 @@ use Illuminate\Support\Facades\Validator;
 use OpenApi\Annotations as OA;  // Make sure this line is correct
 
 /**
+ * @OA\PathItem()
  * @OA\Info(
  *     description="Endpoint commentaire",
  *     version="1.0.0",
  *     title="Swagger Petstore"
  * )
- * @OA\PathItem()
  */
 class CommentaireController extends Controller
 {

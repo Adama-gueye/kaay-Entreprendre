@@ -12,12 +12,13 @@ use App\Http\Requests\LivrableFormRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use OpenApi\Annotations as OA;
 
+
+
 /**
  * @OA\Info(
  *     description="EndPoints pour livrable",
  *     version="1.0.0",
- *     title="Swagger Petstore"
- * )
+ *     title="Swagger Livrable")
  * 
  */
 class LivrableController extends Controller
@@ -26,7 +27,7 @@ class LivrableController extends Controller
 
      /**
      * @OA\Get(
-     *     path="/api/livrable/index,
+     *     path="/api/livrable/index",
      *     summary="Retourne tout les livrables",
      *     @OA\Response(response="200", description="Successful operation")
      * )
@@ -94,15 +95,7 @@ class LivrableController extends Controller
         return 'le formulaire pour editer le livrable';
     }
 
-    /**
-     * 
-     * @OA\Patch(
-     *     path="/ap/livrable/{id}",
-     *     summary="Modification d'un guide",
-     *     @OA\Response(response="201", description="Livrable modifié avec succes"),
-     *     @OA\Response(response="422", description="Erreur")
-     * )
-     */
+     
     // public function update(LivrableFormRequest $request)
     // {
     //     try {
@@ -130,7 +123,7 @@ class LivrableController extends Controller
      *     path="/api/livrable/{id}",
      *     summary="Suppression d'un livrable",
      *     @OA\Response(response="200", description="Livrable supprimé avec succes"),
-     *     @OA\Response(response="422", description="erreur"),
+     *     @OA\Response(response="403", description="erreur"),
      * )
      */
     public function destroy(Request $request)
