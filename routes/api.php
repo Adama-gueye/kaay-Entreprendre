@@ -36,6 +36,7 @@ use App\Http\Controllers\OpenaiController;
 */
 Route::get('/guideIndex', [GuideController::class, 'index']);
 Route::post('/guideStore', [GuideController::class, 'store']);
+Route::get('/users', [UserController::class, 'listeUtilisteurs']);
 
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -50,7 +51,6 @@ Route::get('/goLogin', [UserController::class, function () {
 //partage d'experiance
 
 
-Route::get('/users', [UserController::class, 'listeUtilisteurs']);
 Route::delete('deleteUser/{id}', [UserController::class, 'deleteUser']);
 Route::get('users/edit/{id}', [UserController::class, 'editUser']);
 Route::put('users/update/{id}', [UserController::class, 'updateUser']);

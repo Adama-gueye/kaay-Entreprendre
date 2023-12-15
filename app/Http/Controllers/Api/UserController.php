@@ -34,17 +34,6 @@ class UserController extends Controller
         $users = User::all();
         return response()->json(compact('users'),200);
 
-        // $user = Auth::user();
-            
-        // if($user->role == 'admin'){
-        //     $novices = User::whereHas('role', function ($query) {
-        //         $query->where('nom', 'novice');
-        //     })->get();
-        //     $experimentes = User::whereHas('role', function ($query) {
-        //         $query->where('nom', 'experimente');
-        //     })->get();
-        //     return response()->json(compact('experimentes','novices'),200);
-        // }
     }
 
     /**
@@ -58,26 +47,32 @@ class UserController extends Controller
      */
      public function loginUser(Request $request)
     {
-        
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-        if($validator->fails()){
+        try {
+            $validator = Validator::make($request->all(), [
+                'email' => 'required|email',
+                'password' => 'required',
+            ]);
+            if($validator->fails()){
+                
+                return response()->json(['message' => $validator->errors()],401);
+            }
             
-            return response()->json(['message' => $validator->errors()],401);
-        }
-        
-        if(Auth::attempt($request->all())){
+            if(Auth::attempt($request->all())){
+                
+                $user = Auth::user(); 
+                $success =  $user->createToken('MyApp')->plainTextToken; 
+                
+                //dd($success);
+                return  response()->json(['message'=>'connexion reussi', 'user' => $user, 'token'=>$success ],200);
+            }
+        } catch (ModelNotFoundException $error) {
+            return response()->json(['message' => $error->getMessage()], 404);
+        } catch (Exception $error) {
+            return response()->json(['message' => $error->getMessage()], 403);
+        }   
             
-            $user = Auth::user(); 
-            $success =  $user->createToken('MyApp')->plainTextToken; 
-            //dd($success);
-            return Response(['message'=>'connexion reussi', 'token' => $success],200);
-            return response()->json(compact('success'),200);
             //return $this->returnJsonResponse(200, 'Connexion réussi', $user );
            
-        }
         
         // return response()->json(['message' => 'Email ou mot de passe incorrect'], 401);
 
